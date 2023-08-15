@@ -1,23 +1,19 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
-import 'components/nodo.dart';
+import 'components/figures/nodo.dart';
 import 'data.dart';
-import 'formas.dart';
-import 'classes/modelos.dart';
+import 'components/figures/formas.dart';
+import '../classes/modelo_arista.dart';
+import '../classes/modelo_nodo.dart';
+import 'matriz.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
-
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  List<ModeloNodo> vNodo = [];
-  List<ModeloUnion> vUniones = [];
   int msgNodo = 1;
   int modo = -1;
   final _textFieldController = TextEditingController();
@@ -34,9 +30,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text('Canvas y Gestures Detector'),
-        // ),
         body: Stack(
           children: <Widget>[
             CustomPaint(
@@ -46,14 +39,11 @@ class _HomeState extends State<Home> {
               painter: Nodo(vNodo),
             ),
             GestureDetector(
-              //para controlar acciones en
               onPanDown: (des) {
                 setState(
                   () {
                     switch (modo) {
-                      case 1:
-                        print(
-                            "x: ${des.globalPosition.dx} y: ${des.globalPosition.dy}");
+                      case 1: //agregar nodo
                         vNodo.add(ModeloNodo(
                             msgNodo.toString(),
                             des.globalPosition.dx,
@@ -61,6 +51,12 @@ class _HomeState extends State<Home> {
                             30,
                             msgNodo.toString()));
                         msgNodo++;
+
+                        print("================== vNodo ==================");
+                        print(vNodo);
+                        print("================== vUniones ==================");
+                        print(vUniones);
+                        print("================== nnnnn ==================");
                         break;
                       case 2:
                         int pos = estaSobreNodo(
@@ -100,7 +96,7 @@ class _HomeState extends State<Home> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Ingrese el peso'),
+                                title: const Text('Ingrese el peso'),
                                 content: TextField(
                                   controller: _textFieldController,
                                   decoration: InputDecoration(
@@ -108,7 +104,7 @@ class _HomeState extends State<Home> {
                                 ),
                                 actions: <Widget>[
                                   ElevatedButton(
-                                    child: Text('Aceptar'),
+                                    child: const Text('Aceptar'),
                                     onPressed: () {
                                       var listJoins = vUniones
                                           .where((element) =>
@@ -135,7 +131,7 @@ class _HomeState extends State<Home> {
                                               yinicial != -1 &&
                                               xfinal != -1 &&
                                               yfinal != -1) {
-                                            vUniones.add(ModeloUnion(
+                                            vUniones.add(ModeloArista(
                                                 idInicial,
                                                 objN.id,
                                                 xinicial,
@@ -165,7 +161,7 @@ class _HomeState extends State<Home> {
                                               yinicial != -1 &&
                                               xfinal != -1 &&
                                               yfinal != -1) {
-                                            vUniones.add(ModeloUnion(
+                                            vUniones.add(ModeloArista(
                                                 idInicial,
                                                 objN.id,
                                                 xinicial,
@@ -183,9 +179,6 @@ class _HomeState extends State<Home> {
                                           yfinal = -1;
                                         });
                                       }
-
-                                      // Aquí puedes hacer algo con el texto ingresado por el usuario
-
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -217,7 +210,7 @@ class _HomeState extends State<Home> {
                                 title: Text('Ingrese el nuevo valor'),
                                 content: TextField(
                                   controller: _textFieldController2,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                       hintText: "Ingrese el valor aquí"),
                                 ),
                                 actions: <Widget>[
@@ -246,7 +239,6 @@ class _HomeState extends State<Home> {
                         setState(() {
                           vNodo = [];
                           vUniones = [];
-
                         });
                         break;
                     }
@@ -286,7 +278,6 @@ class _HomeState extends State<Home> {
                         objS.x = des.globalPosition.dx;
                         objS.y = des.globalPosition.dy;
                       }
-
                       break;
                   }
                 });
@@ -294,7 +285,6 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-
         bottomNavigationBar: BottomAppBar(
           color: Colors.lightBlue.shade900,
           child: Row(
@@ -316,14 +306,16 @@ class _HomeState extends State<Home> {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: modo == 2
-                            ? BorderRadius.only(
+                            ? const BorderRadius.only(
                                 topRight: Radius.circular(30),
                               )
-                            : BorderRadius.only(
+                            : const BorderRadius.only(
                                 bottomRight: Radius.circular(30),
                                 bottomLeft: Radius.circular(30),
                               ),
-                        color: modo == 1 ? Colors.white : Colors.lightBlue.shade900,
+                        color: modo == 1
+                            ? Colors.white
+                            : Colors.lightBlue.shade900,
                       ),
                       child: Icon(
                         Icons.add_sharp,
@@ -352,18 +344,20 @@ class _HomeState extends State<Home> {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: modo == 1
-                            ? BorderRadius.only(
+                            ? const BorderRadius.only(
                                 topLeft: Radius.circular(30),
                               )
                             : modo == 3
-                                ? BorderRadius.only(
+                                ? const BorderRadius.only(
                                     topRight: Radius.circular(30),
                                   )
-                                : BorderRadius.only(
+                                : const BorderRadius.only(
                                     bottomRight: Radius.circular(30),
                                     bottomLeft: Radius.circular(30),
                                   ),
-                        color: modo == 2 ? Colors.white : Colors.lightBlue.shade900,
+                        color: modo == 2
+                            ? Colors.white
+                            : Colors.lightBlue.shade900,
                       ),
                       child: Icon(
                         Icons.delete,
@@ -392,22 +386,21 @@ class _HomeState extends State<Home> {
                       height: 60,
                       decoration: BoxDecoration(
                         //sombra para esquinas inferiores con box shadow
-                        
-
-
                         borderRadius: modo == 2
-                            ? BorderRadius.only(
+                            ? const BorderRadius.only(
                                 topLeft: Radius.circular(30),
                               )
                             : modo == 4
-                                ? BorderRadius.only(
+                                ? const BorderRadius.only(
                                     topRight: Radius.circular(30),
                                   )
-                                : BorderRadius.only(
+                                : const BorderRadius.only(
                                     bottomRight: Radius.circular(30),
                                     bottomLeft: Radius.circular(30),
                                   ),
-                        color: modo == 3 ? Colors.white : Colors.lightBlue.shade900,
+                        color: modo == 3
+                            ? Colors.white
+                            : Colors.lightBlue.shade900,
                       ),
                       child: Icon(
                         Icons.move_up,
@@ -436,18 +429,20 @@ class _HomeState extends State<Home> {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: modo == 3
-                            ? BorderRadius.only(
+                            ? const BorderRadius.only(
                                 topLeft: Radius.circular(30),
                               )
                             : modo == 5
-                                ? BorderRadius.only(
+                                ? const BorderRadius.only(
                                     topRight: Radius.circular(30),
                                   )
-                                : BorderRadius.only(
+                                : const BorderRadius.only(
                                     bottomRight: Radius.circular(30),
                                     bottomLeft: Radius.circular(30),
                                   ),
-                        color: modo == 4 ? Colors.white : Colors.lightBlue.shade900,
+                        color: modo == 4
+                            ? Colors.white
+                            : Colors.lightBlue.shade900,
                       ),
                       child: Icon(
                         Icons.linear_scale,
@@ -480,18 +475,20 @@ class _HomeState extends State<Home> {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: modo == 4
-                            ? BorderRadius.only(
+                            ? const BorderRadius.only(
                                 topLeft: Radius.circular(30),
                               )
                             : modo == 6
-                                ? BorderRadius.only(
+                                ? const BorderRadius.only(
                                     topRight: Radius.circular(30),
                                   )
-                                : BorderRadius.only(
+                                : const BorderRadius.only(
                                     bottomRight: Radius.circular(30),
                                     bottomLeft: Radius.circular(30),
                                   ),
-                        color: modo == 5 ? Colors.white : Colors.lightBlue.shade900,
+                        color: modo == 5
+                            ? Colors.white
+                            : Colors.lightBlue.shade900,
                       ),
                       child: Icon(
                         Icons.edit,
@@ -522,14 +519,16 @@ class _HomeState extends State<Home> {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: modo == 5
-                            ? BorderRadius.only(
+                            ? const BorderRadius.only(
                                 topLeft: Radius.circular(30),
                               )
-                            : BorderRadius.only(
+                            : const BorderRadius.only(
                                 bottomLeft: Radius.circular(30),
                                 bottomRight: Radius.circular(30),
                               ),
-                        color: modo == 6 ? Colors.white : Colors.lightBlue.shade900,
+                        color: modo == 6
+                            ? Colors.white
+                            : Colors.lightBlue.shade900,
                       ),
                       child: Icon(
                         Icons.wind_power,
