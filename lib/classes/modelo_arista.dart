@@ -29,4 +29,10 @@ class ModeloArista {
   set xinicio(value) {
     _xinicio = value;
   }
+
+  @override
+  String toString() {
+    return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}';
+  }
 }
+

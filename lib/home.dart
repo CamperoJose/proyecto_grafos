@@ -14,10 +14,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int msgNodo = 1;
   int modo = -1;
   final _textFieldController = TextEditingController();
   final _textFieldController2 = TextEditingController();
+  final _msgNodo = TextEditingController();
+  int idNode = 1;
 
   void cambioEstado(int n) {
     modo = n;
@@ -44,19 +45,73 @@ class _HomeState extends State<Home> {
                   () {
                     switch (modo) {
                       case 1: //agregar nodo
-                        vNodo.add(ModeloNodo(
-                            msgNodo.toString(),
-                            des.globalPosition.dx,
-                            des.globalPosition.dy,
-                            30,
-                            msgNodo.toString()));
-                        msgNodo++;
 
-                        print("================== vNodo ==================");
-                        print(vNodo);
-                        print("================== vUniones ==================");
-                        print(vUniones);
-                        print("================== nnnnn ==================");
+                        // mostrar input de entrada de valkor de _mgsNodo:
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Ingrese el valor'),
+                              content: TextField(
+                                controller: _msgNodo,
+                                decoration: const InputDecoration(
+                                    hintText: "Ingrese el valor aquí"),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aceptar'),
+                                  onPressed: () {
+                                    vNodo.add(ModeloNodo(
+                                        idNode.toString(),
+                                        des.globalPosition.dx,
+                                        des.globalPosition.dy,
+                                        30,
+                                        _msgNodo.text));
+
+                                    setState(() {
+                                      values.add(_msgNodo.text);
+                                      idNode++;
+
+                                      if (matrixTrueFalse.length == 0) {
+                                        matrixTrueFalse.add([0]);
+                                      } else {
+                                        for (int i = 0;
+                                            i < matrixTrueFalse.length;
+                                            i++) {
+                                          matrixTrueFalse[i].add(0);
+                                        }
+
+                                        List<int> list = [];
+                                        for (int i = 0;
+                                            i < matrixTrueFalse.length + 1;
+                                            i++) {
+                                          list.add(0);
+                                        }
+
+                                        matrixTrueFalse.add(list);
+                                      }
+                                    });
+
+                                    print(
+                                        "================== vNodo ==================");
+                                    print(vNodo);
+                                    print(
+                                        "================== vUniones ==================");
+                                    print(vUniones);
+                                    print(
+                                        "================== Valores ==================");
+                                    print(values);
+                                    print(
+                                        "================== Matriz 01  ==================");
+                                    print(matrixTrueFalse);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
                         break;
                       case 2:
                         int pos = estaSobreNodo(
@@ -86,10 +141,13 @@ class _HomeState extends State<Home> {
                         ModeloNodo objN = vNodo
                             .where((element) => int.parse(element.id) == pos)
                             .first;
+
+
                         if (joinModo == 1) {
                           xinicial = objN.x;
                           yinicial = objN.y;
                           idInicial = objN.id;
+                          nodoInicial = objN;
                           joinModo++;
                         } else if (joinModo == 2) {
                           showDialog(
@@ -141,7 +199,11 @@ class _HomeState extends State<Home> {
                                                 _textFieldController.text,
                                                 true));
                                             _textFieldController.text = "";
+
+                                            print(nodoInicial);
+                                            print(objN);
                                           }
+
                                           joinModo = 1;
                                           xinicial = -1;
                                           yinicial = -1;
@@ -179,6 +241,7 @@ class _HomeState extends State<Home> {
                                           yfinal = -1;
                                         });
                                       }
+
                                       Navigator.of(context).pop();
                                     },
                                   ),
