@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:proyecto_grafos/views/matrix_view.dart';
+import 'components/custom_app_bar.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
@@ -31,6 +33,17 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        //boton para crear matriz:
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context, 
+            MaterialPageRoute(builder: (context) => MatrixView())
+            );
+          },
+          child: const Icon(Icons.table_chart_outlined),
+          backgroundColor: Colors.lightBlue.shade900,
+        ),
+
         body: Stack(
           children: <Widget>[
             CustomPaint(
@@ -142,7 +155,6 @@ class _HomeState extends State<Home> {
                             .where((element) => int.parse(element.id) == pos)
                             .first;
 
-
                         if (joinModo == 1) {
                           xinicial = objN.x;
                           yinicial = objN.y;
@@ -200,8 +212,12 @@ class _HomeState extends State<Home> {
                                                 true));
                                             _textFieldController.text = "";
 
-                                            print(nodoInicial);
-                                            print(objN);
+                                            int posInicial = values
+                                                .indexOf(nodoInicial.mensaje);
+                                            int posFinal =
+                                                values.indexOf(objN.mensaje);
+                                            matrixTrueFalse[posInicial]
+                                                [posFinal] = 1;
                                           }
 
                                           joinModo = 1;
@@ -233,6 +249,12 @@ class _HomeState extends State<Home> {
                                                 _textFieldController.text,
                                                 false));
                                             _textFieldController.text = "";
+                                            int posInicial = values
+                                                .indexOf(nodoInicial.mensaje);
+                                            int posFinal =
+                                                values.indexOf(objN.mensaje);
+                                            matrixTrueFalse[posInicial]
+                                                [posFinal] = 1;
                                           }
                                           joinModo = 1;
                                           xinicial = -1;
@@ -348,6 +370,7 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
+
         bottomNavigationBar: BottomAppBar(
           color: Colors.lightBlue.shade900,
           child: Row(
