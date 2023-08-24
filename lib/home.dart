@@ -1,5 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
+import 'package:proyecto_grafos/components/dropdown_component.dart';
+import 'package:proyecto_grafos/views/matrix_view.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
@@ -14,10 +17,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int msgNodo = 1;
   int modo = -1;
   final _textFieldController = TextEditingController();
   final _textFieldController2 = TextEditingController();
+  final _msgNodo = TextEditingController();
+  int idNode = 1;
+  bool isDirected = false;
+
 
   void cambioEstado(int n) {
     modo = n;
@@ -30,6 +36,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MatrixView()));
+          },
+          child: const Icon(Icons.table_chart_outlined),
+          backgroundColor: Colors.lightBlue.shade900,
+        ),
         body: Stack(
           children: <Widget>[
             CustomPaint(
@@ -44,19 +59,83 @@ class _HomeState extends State<Home> {
                   () {
                     switch (modo) {
                       case 1: //agregar nodo
-                        vNodo.add(ModeloNodo(
-                            msgNodo.toString(),
-                            des.globalPosition.dx,
-                            des.globalPosition.dy,
-                            30,
-                            msgNodo.toString()));
-                        msgNodo++;
 
-                        print("================== vNodo ==================");
-                        print(vNodo);
-                        print("================== vUniones ==================");
-                        print(vUniones);
-                        print("================== nnnnn ==================");
+                        // mostrar input de entrada de valkor de _mgsNodo:
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Ingrese el valor'),
+                              content: TextField(
+                                controller: _msgNodo,
+                                decoration: const InputDecoration(
+                                    hintText: "Ingrese el valor aquí"),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aceptar'),
+                                  onPressed: () {
+                                    vNodo.add(ModeloNodo(
+                                        idNode.toString(),
+                                        des.globalPosition.dx,
+                                        des.globalPosition.dy,
+                                        30,
+                                        _msgNodo.text));
+
+                                    setState(() {
+                                      values.add(_msgNodo.text);
+                                      idNode++;
+
+                                      if (matrixTrueFalse.length == 0) {
+                                        matrixTrueFalse.add([0]);
+                                      } else {
+                                        for (int i = 0;
+                                            i < matrixTrueFalse.length;
+                                            i++) {
+                                          matrixTrueFalse[i].add(0);
+                                        }
+
+                                        List<int> list = [];
+                                        for (int i = 0;
+                                            i < matrixTrueFalse.length + 1;
+                                            i++) {
+                                          list.add(0);
+                                        }
+
+                                        matrixTrueFalse.add(list);
+                                      }
+
+                                      if (matrixArists.length == 0) {
+                                        matrixArists.add([0]);
+                                      } else {
+                                        for (int i = 0;
+                                            i < matrixArists.length;
+                                            i++) {
+                                          matrixArists[i].add(0);
+                                        }
+
+                                        List<int> list = [];
+                                        for (int i = 0;
+                                            i < matrixArists.length + 1;
+                                            i++) {
+                                          list.add(0);
+                                        }
+
+                                        matrixArists.add(list);
+                                      }
+                                    });
+
+                                    Navigator.of(context).pop();
+                                    print("a: $matrixTrueFalse");
+
+                                    print("b: $matrixArists");
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
                         break;
                       case 2:
                         int pos = estaSobreNodo(
@@ -78,6 +157,21 @@ class _HomeState extends State<Home> {
 
                           vNodo.removeWhere(
                               (element) => int.parse(element.id) == pos);
+
+                          int posList = values.indexOf(objD.mensaje);
+
+                          values.remove(objD.mensaje);
+
+                          matrixTrueFalse.removeAt(posList);
+                          for (int i = 0; i < matrixTrueFalse.length; i++) {
+                            matrixTrueFalse[i].removeAt(posList);
+                          }
+
+                          matrixArists.removeAt(posList);
+
+                          for (int i = 0; i < matrixArists.length; i++) {
+                            matrixArists[i].removeAt(posList);
+                          }
                         }
                         break;
                       case 4:
@@ -86,10 +180,12 @@ class _HomeState extends State<Home> {
                         ModeloNodo objN = vNodo
                             .where((element) => int.parse(element.id) == pos)
                             .first;
+
                         if (joinModo == 1) {
                           xinicial = objN.x;
                           yinicial = objN.y;
                           idInicial = objN.id;
+                          nodoInicial = objN;
                           joinModo++;
                         } else if (joinModo == 2) {
                           showDialog(
@@ -97,11 +193,31 @@ class _HomeState extends State<Home> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text('Ingrese el peso'),
-                                content: TextField(
+                                content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+
+                                  children: [
+                                    TextField(
                                   controller: _textFieldController,
                                   decoration: InputDecoration(
                                       hintText: "Ingrese el peso aquí"),
                                 ),
+
+                                SizedBox(height: 10,),
+
+                                //combo box para elegir si es dirigido o no
+
+                               GraphTypeDropdown(
+            initialValue: isDirected,
+            onChanged: (newValue) {
+              isDirected = newValue;
+            },
+          ),
+
+    
+                                  ],
+                                ),
+                                
                                 actions: <Widget>[
                                   ElevatedButton(
                                     child: const Text('Aceptar'),
@@ -139,9 +255,22 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                true));
+                                                true, isDirected));
+
+                                            int posInicial = values
+                                                .indexOf(nodoInicial.mensaje);
+                                            int posFinal =
+                                                values.indexOf(objN.mensaje);
+                                            matrixTrueFalse[posInicial]
+                                                [posFinal] = 1;
+
+                                            matrixArists[posInicial][posFinal] =
+                                                int.parse(
+                                                    _textFieldController.text);
+
                                             _textFieldController.text = "";
                                           }
+
                                           joinModo = 1;
                                           xinicial = -1;
                                           yinicial = -1;
@@ -169,7 +298,21 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                false));
+                                                false,
+                                                isDirected
+                                                ));
+
+                                            int posInicial = values
+                                                .indexOf(nodoInicial.mensaje);
+                                            int posFinal =
+                                                values.indexOf(objN.mensaje);
+                                            matrixTrueFalse[posInicial]
+                                                [posFinal] = 1;
+
+                                            matrixArists[posInicial][posFinal] =
+                                                int.parse(
+                                                    _textFieldController.text);
+
                                             _textFieldController.text = "";
                                           }
                                           joinModo = 1;
@@ -179,6 +322,7 @@ class _HomeState extends State<Home> {
                                           yfinal = -1;
                                         });
                                       }
+
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -249,6 +393,7 @@ class _HomeState extends State<Home> {
                 setState(() {
                   switch (modo) {
                     case 3:
+                  
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
 

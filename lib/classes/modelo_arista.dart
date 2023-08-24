@@ -4,9 +4,10 @@ class ModeloArista {
   double _yinicio, _yfinal;
   String peso;
   bool _ida;
+  bool dirigido;
 
   ModeloArista(this.idNodoInicial, this.idNodoFinal, this._xinicio,
-      this._yinicio, this._xfinal, this._yfinal, this.peso, this._ida);
+      this._yinicio, this._xfinal, this._yfinal, this.peso, this._ida, this.dirigido);
 
   get yfinal => _yfinal;
   get yinicio => _yinicio;
@@ -28,5 +29,10 @@ class ModeloArista {
 
   set xinicio(value) {
     _xinicio = value;
+  }
+
+  @override
+  String toString() {
+    return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}';
   }
 }

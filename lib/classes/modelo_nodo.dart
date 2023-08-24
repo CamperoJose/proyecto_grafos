@@ -3,6 +3,7 @@ class ModeloNodo {
   double _x, _y, _radio;
   String _mensaje;
 
+
   ModeloNodo(this._id, this._x, this._y, this._radio, this._mensaje);
 
   String get mensaje => _mensaje;
@@ -14,6 +15,7 @@ class ModeloNodo {
   }
 
   get radio => _radio;
+
 
   set radio(value) {
     _radio = value;
@@ -33,6 +35,6 @@ class ModeloNodo {
 
   @override
   String toString() {
-    return 'ModeloNodo{_x: $_x, _y: $_y, _radio: $_radio, _mensaje: $_mensaje}';
+    return 'ModeloNodo{id: $_id, : $_x, _y: $_y, _radio: $_radio, _mensaje: $_mensaje}';
   }
 }
