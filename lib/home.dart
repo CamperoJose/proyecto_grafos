@@ -74,7 +74,34 @@ class _HomeState extends State<Home> {
                                 ElevatedButton(
                                   child: const Text('Aceptar'),
                                   onPressed: () {
-                                    vNodo.add(ModeloNodo(
+                                    //verificar si ya existe nodo con ese nombre:
+                                    var listNodos = vNodo
+                                        .where((element) =>
+                                            element.mensaje == _msgNodo.text)
+                                        .toList();
+
+                                    if (listNodos.isNotEmpty) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Ya existe un nodo con ese nombre'),
+                                            content: const Text(
+                                                'Por favor ingrese otro nombre'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                child: const Text('Aceptar'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }else{
+                                      vNodo.add(ModeloNodo(
                                         idNode.toString(),
                                         des.globalPosition.dx,
                                         des.globalPosition.dy,
@@ -128,6 +155,8 @@ class _HomeState extends State<Home> {
                                     print("a: $matrixTrueFalse");
 
                                     print("b: $matrixArists");
+                                    }
+                                    
                                   },
                                 ),
                               ],
