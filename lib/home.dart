@@ -24,7 +24,6 @@ class _HomeState extends State<Home> {
   int idNode = 1;
   bool isDirected = false;
 
-
   void cambioEstado(int n) {
     modo = n;
     setState(() {
@@ -194,30 +193,28 @@ class _HomeState extends State<Home> {
                               return AlertDialog(
                                 title: const Text('Ingrese el peso'),
                                 content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     TextField(
-                                  controller: _textFieldController,
-                                  decoration: InputDecoration(
-                                      hintText: "Ingrese el peso aquí"),
-                                ),
+                                      controller: _textFieldController,
+                                      decoration: InputDecoration(
+                                          hintText: "Ingrese el peso aquí"),
+                                    ),
 
-                                SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
 
-                                //combo box para elegir si es dirigido o no
+                                    //combo box para elegir si es dirigido o no
 
-                               GraphTypeDropdown(
-            initialValue: isDirected,
-            onChanged: (newValue) {
-              isDirected = newValue;
-            },
-          ),
-
-    
+                                    GraphTypeDropdown(
+                                      initialValue: isDirected,
+                                      onChanged: (newValue) {
+                                        isDirected = newValue;
+                                      },
+                                    ),
                                   ],
                                 ),
-                                
                                 actions: <Widget>[
                                   ElevatedButton(
                                     child: const Text('Aceptar'),
@@ -255,7 +252,8 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                true, isDirected));
+                                                true,
+                                                isDirected));
 
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
@@ -299,8 +297,7 @@ class _HomeState extends State<Home> {
                                                 yfinal,
                                                 _textFieldController.text,
                                                 false,
-                                                isDirected
-                                                ));
+                                                isDirected));
 
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
@@ -383,6 +380,9 @@ class _HomeState extends State<Home> {
                         setState(() {
                           vNodo = [];
                           vUniones = [];
+                          matrixTrueFalse = [];
+                          matrixArists = [];
+                          values = [];
                         });
                         break;
                     }
@@ -393,7 +393,6 @@ class _HomeState extends State<Home> {
                 setState(() {
                   switch (modo) {
                     case 3:
-                  
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
 
