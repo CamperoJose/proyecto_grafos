@@ -12,6 +12,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   flutter_speed_dial: ^5.0.0
+  flutter_statusbarcolor_ns: ^0.5.0
+  carousel_slider: ^4.0.0
+  flutter_svg: ^0.22.0
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +25,6 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+  assets:
+    - assets/
+

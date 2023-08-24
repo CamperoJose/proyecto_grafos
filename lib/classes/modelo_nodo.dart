@@ -16,6 +16,7 @@ class ModeloNodo {
 
   get radio => _radio;
 
+
   set radio(value) {
     _radio = value;
   }

@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
+import 'package:proyecto_grafos/components/dropdown_component.dart';
 import 'package:proyecto_grafos/views/matrix_view.dart';
-import 'components/custom_app_bar.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
@@ -21,6 +22,8 @@ class _HomeState extends State<Home> {
   final _textFieldController2 = TextEditingController();
   final _msgNodo = TextEditingController();
   int idNode = 1;
+  bool isDirected = false;
+
 
   void cambioEstado(int n) {
     modo = n;
@@ -33,17 +36,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        //boton para crear matriz:
+        backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context, 
-            MaterialPageRoute(builder: (context) => MatrixView())
-            );
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MatrixView()));
           },
           child: const Icon(Icons.table_chart_outlined),
           backgroundColor: Colors.lightBlue.shade900,
         ),
-
         body: Stack(
           children: <Widget>[
             CustomPaint(
@@ -103,21 +104,31 @@ class _HomeState extends State<Home> {
 
                                         matrixTrueFalse.add(list);
                                       }
+
+                                      if (matrixArists.length == 0) {
+                                        matrixArists.add([0]);
+                                      } else {
+                                        for (int i = 0;
+                                            i < matrixArists.length;
+                                            i++) {
+                                          matrixArists[i].add(0);
+                                        }
+
+                                        List<int> list = [];
+                                        for (int i = 0;
+                                            i < matrixArists.length + 1;
+                                            i++) {
+                                          list.add(0);
+                                        }
+
+                                        matrixArists.add(list);
+                                      }
                                     });
 
-                                    print(
-                                        "================== vNodo ==================");
-                                    print(vNodo);
-                                    print(
-                                        "================== vUniones ==================");
-                                    print(vUniones);
-                                    print(
-                                        "================== Valores ==================");
-                                    print(values);
-                                    print(
-                                        "================== Matriz 01  ==================");
-                                    print(matrixTrueFalse);
                                     Navigator.of(context).pop();
+                                    print("a: $matrixTrueFalse");
+
+                                    print("b: $matrixArists");
                                   },
                                 ),
                               ],
@@ -146,6 +157,21 @@ class _HomeState extends State<Home> {
 
                           vNodo.removeWhere(
                               (element) => int.parse(element.id) == pos);
+
+                          int posList = values.indexOf(objD.mensaje);
+
+                          values.remove(objD.mensaje);
+
+                          matrixTrueFalse.removeAt(posList);
+                          for (int i = 0; i < matrixTrueFalse.length; i++) {
+                            matrixTrueFalse[i].removeAt(posList);
+                          }
+
+                          matrixArists.removeAt(posList);
+
+                          for (int i = 0; i < matrixArists.length; i++) {
+                            matrixArists[i].removeAt(posList);
+                          }
                         }
                         break;
                       case 4:
@@ -167,11 +193,31 @@ class _HomeState extends State<Home> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text('Ingrese el peso'),
-                                content: TextField(
+                                content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+
+                                  children: [
+                                    TextField(
                                   controller: _textFieldController,
                                   decoration: InputDecoration(
                                       hintText: "Ingrese el peso aquí"),
                                 ),
+
+                                SizedBox(height: 10,),
+
+                                //combo box para elegir si es dirigido o no
+
+                               GraphTypeDropdown(
+            initialValue: isDirected,
+            onChanged: (newValue) {
+              isDirected = newValue;
+            },
+          ),
+
+    
+                                  ],
+                                ),
+                                
                                 actions: <Widget>[
                                   ElevatedButton(
                                     child: const Text('Aceptar'),
@@ -209,8 +255,7 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                true));
-                                            _textFieldController.text = "";
+                                                true, isDirected));
 
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
@@ -218,6 +263,12 @@ class _HomeState extends State<Home> {
                                                 values.indexOf(objN.mensaje);
                                             matrixTrueFalse[posInicial]
                                                 [posFinal] = 1;
+
+                                            matrixArists[posInicial][posFinal] =
+                                                int.parse(
+                                                    _textFieldController.text);
+
+                                            _textFieldController.text = "";
                                           }
 
                                           joinModo = 1;
@@ -247,14 +298,22 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                false));
-                                            _textFieldController.text = "";
+                                                false,
+                                                isDirected
+                                                ));
+
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
                                             int posFinal =
                                                 values.indexOf(objN.mensaje);
                                             matrixTrueFalse[posInicial]
                                                 [posFinal] = 1;
+
+                                            matrixArists[posInicial][posFinal] =
+                                                int.parse(
+                                                    _textFieldController.text);
+
+                                            _textFieldController.text = "";
                                           }
                                           joinModo = 1;
                                           xinicial = -1;
@@ -334,6 +393,7 @@ class _HomeState extends State<Home> {
                 setState(() {
                   switch (modo) {
                     case 3:
+                  
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
 
@@ -370,7 +430,6 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-
         bottomNavigationBar: BottomAppBar(
           color: Colors.lightBlue.shade900,
           child: Row(

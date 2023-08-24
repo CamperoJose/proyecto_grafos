@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import '../matriz.dart';
 
 class MatrixView extends StatelessWidget {
+  const MatrixView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Matrices de Adyacencia'),
+        backgroundColor: Colors.lightBlue.shade900,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -15,12 +18,12 @@ class MatrixView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _SectionTitle('Matriz de Adyacencia True/False:'),
-            SizedBox(height: 8),
-            MatrixTable(matrix: matrixTrueFalse, values: values),
-            SizedBox(height: 24),
+            const SizedBox(height: 16),
+            _MatrixWidget(matrix: matrixTrueFalse, values: values),
+            const SizedBox(height: 32),
             _SectionTitle('Matriz de Aristas:'),
-            SizedBox(height: 8),
-            MatrixTable(matrix: matrixArists, values: values),
+            const SizedBox(height: 16),
+            _MatrixWidget(matrix: matrixArists, values: values),
           ],
         ),
       ),
@@ -28,43 +31,64 @@ class MatrixView extends StatelessWidget {
   }
 }
 
-class MatrixTable extends StatelessWidget {
-  final List<List<int>> matrix;
+class _MatrixWidget extends StatelessWidget {
+  final List<List<int>> matrix; 
   final List<String> values;
 
-  MatrixTable({required this.matrix, required this.values});
+  _MatrixWidget({required this.matrix, required this.values});
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      defaultColumnWidth: FixedColumnWidth(48),
-      border: TableBorder.all(width: 1.0, color: Colors.grey),
-      children: [
-        TableRow(
-          decoration: BoxDecoration(
-            color: Colors.blueGrey.withOpacity(0.2),
-          ),
+    List<Color> columnColors = [Colors.blueGrey.withOpacity(0.2), Colors.white];
+    int currentColumnColorIndex = 0;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 1.0, color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        child: Table(
+          defaultColumnWidth: FixedColumnWidth(80),
           children: [
-            TableCell(child: Container()), // Celda vacía en la esquina superior izquierda
-            ...values.map((value) {
-              return _TableCell(value);
+            TableRow(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              children: [
+                _TableCell(''),
+                ...values.map((value) {
+                  return _TableCell(value, isHeader: true);
+                }),
+              ],
+            ),
+            ...matrix.asMap().entries.map((entry) {
+              int rowIndex = entry.key;
+              List<int> rowValues = entry.value;
+
+              return TableRow(
+                children: [
+                  _TableCell(values[rowIndex], isHeader: true),
+                  ...rowValues.asMap().entries.map((entry) {
+                    int value = entry.value;
+
+                    currentColumnColorIndex =
+                        (currentColumnColorIndex + 1) % columnColors.length;
+
+                    return _TableCell(
+                      value.toString(),
+                      isBold: value != 0,
+                      backgroundColor: columnColors[currentColumnColorIndex],
+                    );
+                  }).toList(),
+                ],
+              );
             }).toList(),
           ],
         ),
-        ...matrix.asMap().entries.map((entry) {
-          int rowIndex = entry.key;
-          List<int> rowValues = entry.value;
-
-          return TableRow(
-            children: [
-              _TableCell(values[rowIndex], isHeader: true),
-              ...rowValues.map((value) {
-                return _TableCell(value.toString());
-              }).toList(),
-            ],
-          );
-        }).toList(),
-      ],
+      ),
     );
   }
 }
@@ -78,7 +102,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
     );
   }
 }
@@ -86,18 +110,28 @@ class _SectionTitle extends StatelessWidget {
 class _TableCell extends StatelessWidget {
   final String text;
   final bool isHeader;
+  final bool isBold;
+  final Color? backgroundColor;
 
-  _TableCell(this.text, {this.isHeader = false});
+  _TableCell(this.text,
+      {this.isHeader = false, this.isBold = false, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
-    return TableCell(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        alignment: isHeader ? Alignment.center : Alignment.centerLeft,
-        child: Text(
-          text,
-          style: TextStyle(fontWeight: isHeader ? FontWeight.bold : FontWeight.normal),
+    return Container(
+      padding: EdgeInsets.all(4),
+      alignment: Alignment.center,
+      color: backgroundColor,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: isBold ? FontWeight.bold : isHeader? FontWeight.bold : FontWeight.normal,
+          color: isBold
+              ? Colors.purple
+              : isHeader
+                  ? Colors.black
+                  : Colors.grey.shade600,
+          fontSize: isBold ? 16 : 14,
         ),
       ),
     );

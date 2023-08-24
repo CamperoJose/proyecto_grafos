@@ -1,0 +1,6 @@
+framework module flutter_statusbarcolor_ns {
+  umbrella header "flutter_statusbarcolor_ns-umbrella.h"
+
+  export *
+  module * { export * }
+}

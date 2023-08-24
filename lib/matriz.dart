@@ -15,6 +15,4 @@ List<String> values = [];
 
 List<List<int>> matrixTrueFalse = [];
 
-
-
 List<List<int>> matrixArists = [];

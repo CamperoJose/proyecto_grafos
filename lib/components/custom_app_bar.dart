@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           letterSpacing: 1.5,
         ),
       ),
-      backgroundColor: Colors.lightBlue.shade900,
+      backgroundColor: Colors.pink.shade900,
       elevation: 8,
       actions: [
         Padding(
