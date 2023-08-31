@@ -1,14 +1,18 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
 import 'package:proyecto_grafos/views/matrix_view.dart';
+import 'package:proyecto_grafos/views/vista_manual.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
 import '../classes/modelo_arista.dart';
 import '../classes/modelo_nodo.dart';
 import 'matriz.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -36,14 +40,89 @@ class _HomeState extends State<Home> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MatrixView()));
-          },
-          child: const Icon(Icons.table_chart_outlined),
+        
+        //floating usando speedial:
+        floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.view_list,
+          animatedIconTheme: IconThemeData(size: 22.0),
           backgroundColor: Colors.lightBlue.shade900,
+          visible: true,
+
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.table_chart_outlined),
+              backgroundColor: Colors.orange.shade600,
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MatrixView()));
+              },
+              label: 'Generar Matriz',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.orange.shade600,
+            ),
+
+            SpeedDialChild(
+              child: Icon(Icons.download_sharp),
+              backgroundColor: Colors.red.shade800,
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MatrixView()));
+              },
+              label: 'Descargar Grafo',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.red.shade800,
+            ),
+
+            SpeedDialChild(
+              child: Icon(Icons.upload),
+              backgroundColor: Colors.green.shade500,
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MatrixView()));
+              },
+              label: 'Subir Grafo',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.green.shade500,
+            ),
+
+            SpeedDialChild(
+              child: Icon(Icons.book_sharp),
+              backgroundColor: Colors.purple.shade400,
+              onTap: () async {
+    //leer pdf desde el link https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing:
+    const url = 'https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el PDF';
+    }
+              },
+              label: 'Manual',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.purple.shade400,
+            ),
+  
+              
+
+
+          ],
+
         ),
+
+
+
+
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     Navigator.push(
+        //         context, MaterialPageRoute(builder: (context) => MatrixView()));
+        //   },
+        //   child: const Icon(Icons.table_chart_outlined),
+        //   backgroundColor: Colors.lightBlue.shade900,
+        // ),
+
+
+
         body: Stack(
           children: <Widget>[
             CustomPaint(
