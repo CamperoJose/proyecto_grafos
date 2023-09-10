@@ -37,4 +37,14 @@ class ModeloNodo {
   String toString() {
     return 'ModeloNodo{id: $_id, : $_x, _y: $_y, _radio: $_radio, _mensaje: $_mensaje}';
   }
+
+  toJson(){
+    return {
+      'id': id,
+      'x': x,
+      'y': y,
+      'radio': radio,
+      'mensaje': mensaje,
+    };
+  }
 }

@@ -35,4 +35,18 @@ class ModeloArista {
   String toString() {
     return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}';
   }
+
+  toJson(){
+    return {
+      'idNodoInicial': idNodoInicial,
+      'idNodoFinal': idNodoFinal,
+      'xinicio': _xinicio,
+      'xfinal': _xfinal,
+      'yinicio': _yinicio,
+      'yfinal': _yfinal,
+      'peso': peso,
+      'ida': _ida,
+      'dirigido': dirigido,
+    };
+  }
 }

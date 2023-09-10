@@ -11,15 +11,19 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  path_provider: ^2.1.1
   flutter_speed_dial: ^7.0.0
   flutter_statusbarcolor_ns: ^0.5.0
   carousel_slider: ^4.0.0
   flutter_svg: ^0.22.0
   flutter_pdfview: ^1.0.0
   syncfusion_flutter_pdfviewer: ^20.4.47 
-  path_provider: ^2.0.14
   open_filex: ^4.3.2
   url_launcher: ^6.1.13
+  file_picker: ^5.5.0
+  universal_html: ^2.2.4
+  
+  
 
 dev_dependencies:
   flutter_test:

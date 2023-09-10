@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
+import 'package:proyecto_grafos/save_json.dart';
+import 'package:proyecto_grafos/subir_archivo.dart';
 import 'package:proyecto_grafos/views/matrix_view.dart';
 import 'package:proyecto_grafos/views/vista_manual.dart';
 import 'components/figures/nodo.dart';
@@ -12,7 +14,9 @@ import '../classes/modelo_arista.dart';
 import '../classes/modelo_nodo.dart';
 import 'matriz.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -40,77 +44,68 @@ class _HomeState extends State<Home> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        
+
         //floating usando speedial:
         floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.view_list,
           animatedIconTheme: IconThemeData(size: 22.0),
           backgroundColor: Colors.lightBlue.shade900,
           visible: true,
-
           children: [
             SpeedDialChild(
               child: Icon(Icons.table_chart_outlined),
               backgroundColor: Colors.orange.shade600,
               onTap: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => MatrixView()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SubirArchivoPage()));
               },
               label: 'Generar Matriz',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
               labelBackgroundColor: Colors.orange.shade600,
             ),
-
             SpeedDialChild(
               child: Icon(Icons.download_sharp),
               backgroundColor: Colors.red.shade800,
               onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => MatrixView()));
+                  crearArchivoEnCarpeta(
+                      'mi_archivo2.txt', 'Contenido del archivo', context);
               },
               label: 'Descargar Grafo',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
               labelBackgroundColor: Colors.red.shade800,
             ),
-
             SpeedDialChild(
               child: Icon(Icons.upload),
               backgroundColor: Colors.green.shade500,
               onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => MatrixView()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MatrixView()));
               },
               label: 'Subir Grafo',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
               labelBackgroundColor: Colors.green.shade500,
             ),
-
             SpeedDialChild(
               child: Icon(Icons.book_sharp),
               backgroundColor: Colors.purple.shade400,
               onTap: () async {
-    //leer pdf desde el link https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing:
-    const url = 'https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'No se pudo abrir el PDF';
-    }
+                //leer pdf desde el link https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing:
+                const url =
+                    'https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'No se pudo abrir el PDF';
+                }
               },
               label: 'Manual',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
               labelBackgroundColor: Colors.purple.shade400,
             ),
-  
-              
-
-
           ],
-
         ),
-
-
-
 
         // floatingActionButton: FloatingActionButton(
         //   onPressed: () {
@@ -120,8 +115,6 @@ class _HomeState extends State<Home> {
         //   child: const Icon(Icons.table_chart_outlined),
         //   backgroundColor: Colors.lightBlue.shade900,
         // ),
-
-
 
         body: Stack(
           children: <Widget>[
@@ -179,63 +172,62 @@ class _HomeState extends State<Home> {
                                           );
                                         },
                                       );
-                                    }else{
+                                    } else {
                                       vNodo.add(ModeloNodo(
-                                        idNode.toString(),
-                                        des.globalPosition.dx,
-                                        des.globalPosition.dy,
-                                        30,
-                                        _msgNodo.text));
+                                          idNode.toString(),
+                                          des.globalPosition.dx,
+                                          des.globalPosition.dy,
+                                          30,
+                                          _msgNodo.text));
 
-                                    setState(() {
-                                      values.add(_msgNodo.text);
-                                      idNode++;
+                                      setState(() {
+                                        values.add(_msgNodo.text);
+                                        idNode++;
 
-                                      if (matrixTrueFalse.length == 0) {
-                                        matrixTrueFalse.add([0]);
-                                      } else {
-                                        for (int i = 0;
-                                            i < matrixTrueFalse.length;
-                                            i++) {
-                                          matrixTrueFalse[i].add(0);
+                                        if (matrixTrueFalse.length == 0) {
+                                          matrixTrueFalse.add([0]);
+                                        } else {
+                                          for (int i = 0;
+                                              i < matrixTrueFalse.length;
+                                              i++) {
+                                            matrixTrueFalse[i].add(0);
+                                          }
+
+                                          List<int> list = [];
+                                          for (int i = 0;
+                                              i < matrixTrueFalse.length + 1;
+                                              i++) {
+                                            list.add(0);
+                                          }
+
+                                          matrixTrueFalse.add(list);
                                         }
 
-                                        List<int> list = [];
-                                        for (int i = 0;
-                                            i < matrixTrueFalse.length + 1;
-                                            i++) {
-                                          list.add(0);
+                                        if (matrixArists.length == 0) {
+                                          matrixArists.add([0]);
+                                        } else {
+                                          for (int i = 0;
+                                              i < matrixArists.length;
+                                              i++) {
+                                            matrixArists[i].add(0);
+                                          }
+
+                                          List<int> list = [];
+                                          for (int i = 0;
+                                              i < matrixArists.length + 1;
+                                              i++) {
+                                            list.add(0);
+                                          }
+
+                                          matrixArists.add(list);
                                         }
+                                      });
 
-                                        matrixTrueFalse.add(list);
-                                      }
+                                      Navigator.of(context).pop();
+                                      print("a: $matrixTrueFalse");
 
-                                      if (matrixArists.length == 0) {
-                                        matrixArists.add([0]);
-                                      } else {
-                                        for (int i = 0;
-                                            i < matrixArists.length;
-                                            i++) {
-                                          matrixArists[i].add(0);
-                                        }
-
-                                        List<int> list = [];
-                                        for (int i = 0;
-                                            i < matrixArists.length + 1;
-                                            i++) {
-                                          list.add(0);
-                                        }
-
-                                        matrixArists.add(list);
-                                      }
-                                    });
-
-                                    Navigator.of(context).pop();
-                                    print("a: $matrixTrueFalse");
-
-                                    print("b: $matrixArists");
+                                      print("b: $matrixArists");
                                     }
-                                    
                                   },
                                 ),
                               ],
