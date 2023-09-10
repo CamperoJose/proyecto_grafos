@@ -1,0 +1,42 @@
+--- !tapi-tbd
+tbd-version:     4
+targets:         [ arm64-macos ]
+flags:           [ not_app_extension_safe ]
+install-name:    '@rpath/syncfusion_pdfviewer_macos.framework/Versions/A/syncfusion_pdfviewer_macos'
+swift-abi-version: 7
+exports:
+  - targets:         [ arm64-macos ]
+    symbols:         [ '_$s10Foundation4DataV26syncfusion_pdfviewer_macosE6bitmapSo16NSBitmapImageRepCSgvg', 
+                       '_$s10Foundation4DataV26syncfusion_pdfviewer_macosE6bitmapSo16NSBitmapImageRepCSgvpMV', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC010initializeF8Renderer33_3EFBA66A215BD997E12DDF4622E01BC0LL4call6resultySo0E10MethodCallC_yypSgctF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC011getImageForH033_3EFBA66A215BD997E12DDF4622E01BC0LL5index5scale10documentIDSo0E17StandardTypedDataCSi_12CoreGraphics7CGFloatVSStF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvM', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvMTq', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvg', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvgTq', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvpMV', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvpWvd', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvpfi', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvs', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC12documentRepoSDySSSo16CGPDFDocumentRefaSgGvsTq', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC13closeDocument33_3EFBA66A215BD997E12DDF4622E01BC0LL4call6resultySo0E10MethodCallC_yypSgctF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC13getPagesWidth33_3EFBA66A215BD997E12DDF4622E01BC0LL4call6resultySo0E10MethodCallC_yypSgctF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC14getPagesHeight33_3EFBA66A215BD997E12DDF4622E01BC0LL4call6resultySo0E10MethodCallC_yypSgctF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC6handle_6resultySo0E10MethodCallC_yypSgctF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC6handle_6resultySo0E10MethodCallC_yypSgctFTq', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC8getImage33_3EFBA66A215BD997E12DDF4622E01BC0LL4call6resultySo0E10MethodCallC_yypSgctF', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginC8register4withySo0eH9Registrar_p_tFZ', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginCACycfC', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginCACycfc', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginCMa', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginCMn', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginCN', 
+                       '_$s26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPluginCfD', 
+                       '_$sSo16NSBitmapImageRepC26syncfusion_pdfviewer_macosE3png10Foundation4DataVSgvg', 
+                       '_$sSo16NSBitmapImageRepC26syncfusion_pdfviewer_macosE3png10Foundation4DataVSgvpMV', 
+                       '_$sSo7NSImageC26syncfusion_pdfviewer_macosE3png10Foundation4DataVSgvg', 
+                       '_$sSo7NSImageC26syncfusion_pdfviewer_macosE3png10Foundation4DataVSgvpMV', 
+                       '_$sSo7NSImageC26syncfusion_pdfviewer_macosE4size7actionsABSo6CGSizeV_ySo12CGContextRefaXEtcfC', 
+                       _syncfusion_pdfviewer_macosVersionNumber, _syncfusion_pdfviewer_macosVersionString ]
+    objc-classes:    [ PodsDummy_syncfusion_pdfviewer_macos, _TtC26syncfusion_pdfviewer_macos32SyncfusionFlutterPdfViewerPlugin ]
+...

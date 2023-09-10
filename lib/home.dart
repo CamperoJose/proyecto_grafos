@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
+import 'package:proyecto_grafos/generar_estructura_json.dart';
 import 'package:proyecto_grafos/save_json.dart';
 import 'package:proyecto_grafos/subir_archivo.dart';
 import 'package:proyecto_grafos/views/matrix_view.dart';
@@ -56,10 +57,9 @@ class _HomeState extends State<Home> {
               child: Icon(Icons.table_chart_outlined),
               backgroundColor: Colors.orange.shade600,
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SubirArchivoPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MatrixView()));
+                
               },
               label: 'Generar Matriz',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
@@ -69,8 +69,41 @@ class _HomeState extends State<Home> {
               child: Icon(Icons.download_sharp),
               backgroundColor: Colors.red.shade800,
               onTap: () {
-                  crearArchivoEnCarpeta(
-                      'mi_archivo2.txt', 'Contenido del archivo', context);
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    String nuevoNombre =
+                        ''; // Variable para almacenar el nuevo nombre de archivo.
+
+                    return AlertDialog(
+                      title: const Text('Ingrese el nombre del archivo:'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          TextField(
+                            onChanged: (text) {
+                              nuevoNombre =
+                                  text; // Actualizar el nuevo nombre cuando el usuario escriba.
+                            },
+                          ),
+                        ],
+                      ),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          child: const Text('Aceptar'),
+                          onPressed: () {
+                            if (nuevoNombre.isNotEmpty) {
+                              crearArchivoEnCarpeta('$nuevoNombre.json', generarEstructuraJson(), context);
+
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+
               },
               label: 'Descargar Grafo',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
@@ -80,8 +113,12 @@ class _HomeState extends State<Home> {
               child: Icon(Icons.upload),
               backgroundColor: Colors.green.shade500,
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MatrixView()));
+                setState(() {
+                  
+                  subirArchivo(context).then((value) => setState(() {
+                    print("Archivo subido");
+                  }));
+                });
               },
               label: 'Subir Grafo',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
