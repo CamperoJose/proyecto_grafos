@@ -33,8 +33,30 @@ class ModeloNodo {
     _x = value;
   }
 
+  static ModeloNodo fromJson(Map<String, dynamic> json) {
+    return ModeloNodo(
+      json['id'],
+      json['x'],
+      json['y'],
+      json['radio'],
+      json['mensaje'],
+    );
+  }
+
   @override
   String toString() {
     return 'ModeloNodo{id: $_id, : $_x, _y: $_y, _radio: $_radio, _mensaje: $_mensaje}';
   }
+
+  toJson(){
+    return {
+      'id': id,
+      'x': x,
+      'y': y,
+      'radio': radio,
+      'mensaje': mensaje,
+    };
+  }
+
+
 }

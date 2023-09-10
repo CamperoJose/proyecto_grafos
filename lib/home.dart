@@ -1,14 +1,23 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
+import 'package:proyecto_grafos/generar_estructura_json.dart';
+import 'package:proyecto_grafos/save_json.dart';
+import 'package:proyecto_grafos/subir_archivo.dart';
 import 'package:proyecto_grafos/views/matrix_view.dart';
+import 'package:proyecto_grafos/views/vista_manual.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
 import '../classes/modelo_arista.dart';
 import '../classes/modelo_nodo.dart';
 import 'matriz.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,7 +33,6 @@ class _HomeState extends State<Home> {
   int idNode = 1;
   bool isDirected = false;
 
-
   void cambioEstado(int n) {
     modo = n;
     setState(() {
@@ -37,14 +45,107 @@ class _HomeState extends State<Home> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MatrixView()));
-          },
-          child: const Icon(Icons.table_chart_outlined),
+
+        //floating usando speedial:
+        floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.view_list,
+          animatedIconTheme: IconThemeData(size: 22.0),
           backgroundColor: Colors.lightBlue.shade900,
+          visible: true,
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.table_chart_outlined),
+              backgroundColor: Colors.orange.shade600,
+              onTap: () {
+                print(matrixTrueFalse);
+                print(matrixArists);
+                print(values);
+
+                print(vNodo);
+                print(vUniones);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MatrixView()));
+              },
+              label: 'Generar Matriz',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.orange.shade600,
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.download_sharp),
+              backgroundColor: Colors.red.shade800,
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    String nuevoNombre =
+                        ''; // Variable para almacenar el nuevo nombre de archivo.
+
+                    return AlertDialog(
+                      title: const Text('Ingrese el nombre del archivo:'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          TextField(
+                            onChanged: (text) {
+                              nuevoNombre =
+                                  text; // Actualizar el nuevo nombre cuando el usuario escriba.
+                            },
+                          ),
+                        ],
+                      ),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          child: const Text('Aceptar'),
+                          onPressed: () {
+                            if (nuevoNombre.isNotEmpty) {
+                              crearArchivoEnCarpeta('$nuevoNombre.json',
+                                  generarEstructuraJson(), context);
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              label: 'Descargar Grafo',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.red.shade800,
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.upload),
+              backgroundColor: Colors.green.shade500,
+              onTap: () {
+                setState(() {
+                  subirArchivo(context).then((value) => setState(() {
+                        print("Archivo subido");
+                      }));
+                });
+              },
+              label: 'Subir Grafo',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.green.shade500,
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.book_sharp),
+              backgroundColor: Colors.purple.shade400,
+              onTap: () async {
+                //leer pdf desde el link https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing:
+                const url =
+                    'https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'No se pudo abrir el PDF';
+                }
+              },
+              label: 'Manual',
+              labelStyle: TextStyle(fontWeight: FontWeight.w500),
+              labelBackgroundColor: Colors.purple.shade400,
+            ),
+          ],
         ),
+
         body: Stack(
           children: <Widget>[
             CustomPaint(
@@ -75,60 +176,103 @@ class _HomeState extends State<Home> {
                                 ElevatedButton(
                                   child: const Text('Aceptar'),
                                   onPressed: () {
-                                    vNodo.add(ModeloNodo(
-                                        idNode.toString(),
-                                        des.globalPosition.dx,
-                                        des.globalPosition.dy,
-                                        30,
-                                        _msgNodo.text));
+                                    //verificar si ya existe nodo con ese nombre:
+                                    var listNodos = vNodo
+                                        .where((element) =>
+                                            element.mensaje == _msgNodo.text)
+                                        .toList();
 
-                                    setState(() {
-                                      values.add(_msgNodo.text);
-                                      idNode++;
+                                    if (listNodos.isNotEmpty) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Ya existe un nodo con ese nombre'),
+                                            content: const Text(
+                                                'Por favor ingrese otro nombre'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                child: const Text('Aceptar'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      vNodo.add(ModeloNodo(
+                                          (vNodo.length + 1).toString(),
+                                          des.globalPosition.dx,
+                                          des.globalPosition.dy,
+                                          30,
+                                          _msgNodo.text));
 
-                                      if (matrixTrueFalse.length == 0) {
-                                        matrixTrueFalse.add([0]);
-                                      } else {
-                                        for (int i = 0;
-                                            i < matrixTrueFalse.length;
-                                            i++) {
-                                          matrixTrueFalse[i].add(0);
+                                      print(matrixTrueFalse);
+                                      print(matrixArists);
+
+                                      setState(() {
+                                        values.add(_msgNodo.text);
+
+                                        if (matrixTrueFalse.length == 0) {
+                                          print("llega 1");
+                                          matrixTrueFalse.add([0]);
+                                        } else {
+                                          print(
+                                              "llega 2. tamanio matriz: ${matrixTrueFalse.length}");
+                                          for (int i = 0;
+                                              i < matrixTrueFalse.length;
+                                              i++) {
+                                            print("agregando en i = $i");
+                                            matrixTrueFalse[i].add(0);
+                                            print(matrixTrueFalse);
+                                          }
+
+                                          print("termina primer for");
+
+                                          List<int> list = [];
+                                          for (int i = 0;
+                                              i < matrixTrueFalse.length+1;
+                                              i++) {
+                                            list.add(0);
+                                          }
+
+                                          print("termina segundo for");
+
+                                          matrixTrueFalse.add(list);
+
+                                          print(matrixTrueFalse);
                                         }
 
-                                        List<int> list = [];
-                                        for (int i = 0;
-                                            i < matrixTrueFalse.length + 1;
-                                            i++) {
-                                          list.add(0);
+                                        print("llega 3");
+
+                                        if (matrixArists.length == 0) {
+                                          matrixArists.add([0]);
+                                        } else {
+                                          for (int i = 0;
+                                              i < matrixArists.length;
+                                              i++) {
+                                            matrixArists[i].add(0);
+                                          }
+
+                                          List<int> list = [];
+                                          for (int i = 0;
+                                              i < matrixArists.length + 1;
+                                              i++) {
+                                            list.add(0);
+                                          }
+
+                                          matrixArists.add(list);
                                         }
+                                      });
 
-                                        matrixTrueFalse.add(list);
-                                      }
+                                      Navigator.of(context).pop();
+                                      print("a: $matrixTrueFalse");
 
-                                      if (matrixArists.length == 0) {
-                                        matrixArists.add([0]);
-                                      } else {
-                                        for (int i = 0;
-                                            i < matrixArists.length;
-                                            i++) {
-                                          matrixArists[i].add(0);
-                                        }
-
-                                        List<int> list = [];
-                                        for (int i = 0;
-                                            i < matrixArists.length + 1;
-                                            i++) {
-                                          list.add(0);
-                                        }
-
-                                        matrixArists.add(list);
-                                      }
-                                    });
-
-                                    Navigator.of(context).pop();
-                                    print("a: $matrixTrueFalse");
-
-                                    print("b: $matrixArists");
+                                      print("b: $matrixArists");
+                                    }
                                   },
                                 ),
                               ],
@@ -194,30 +338,28 @@ class _HomeState extends State<Home> {
                               return AlertDialog(
                                 title: const Text('Ingrese el peso'),
                                 content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     TextField(
-                                  controller: _textFieldController,
-                                  decoration: InputDecoration(
-                                      hintText: "Ingrese el peso aquí"),
-                                ),
+                                      controller: _textFieldController,
+                                      decoration: InputDecoration(
+                                          hintText: "Ingrese el peso aquí"),
+                                    ),
 
-                                SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
 
-                                //combo box para elegir si es dirigido o no
+                                    //combo box para elegir si es dirigido o no
 
-                               GraphTypeDropdown(
-            initialValue: isDirected,
-            onChanged: (newValue) {
-              isDirected = newValue;
-            },
-          ),
-
-    
+                                    GraphTypeDropdown(
+                                      initialValue: isDirected,
+                                      onChanged: (newValue) {
+                                        isDirected = newValue;
+                                      },
+                                    ),
                                   ],
                                 ),
-                                
                                 actions: <Widget>[
                                   ElevatedButton(
                                     child: const Text('Aceptar'),
@@ -255,7 +397,8 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                true, isDirected));
+                                                true,
+                                                isDirected));
 
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
@@ -299,8 +442,7 @@ class _HomeState extends State<Home> {
                                                 yfinal,
                                                 _textFieldController.text,
                                                 false,
-                                                isDirected
-                                                ));
+                                                isDirected));
 
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
@@ -383,6 +525,9 @@ class _HomeState extends State<Home> {
                         setState(() {
                           vNodo = [];
                           vUniones = [];
+                          matrixTrueFalse = [];
+                          matrixArists = [];
+                          values = [];
                         });
                         break;
                     }
@@ -393,7 +538,6 @@ class _HomeState extends State<Home> {
                 setState(() {
                   switch (modo) {
                     case 3:
-                  
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
 

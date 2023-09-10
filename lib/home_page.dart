@@ -186,7 +186,7 @@ class HomePage extends StatelessWidget {
                             SizedBox(height: 20),
                             // Improved developer names presentation
                             Text(
-                              '@Campero__jose    @MoronDiego\n@ETC\n@ETC',
+                              '@Campero__jose\n@MoronDiego\n@IsmaelRiver\n@Ruddy',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

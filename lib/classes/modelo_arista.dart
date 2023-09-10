@@ -33,6 +33,34 @@ class ModeloArista {
 
   @override
   String toString() {
-    return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}';
+    return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}, _xinicio: $_xinicio, _xfinal: $_xfinal, _yinicio: $_yinicio, _yfinal: $_yfinal';
+  }
+
+  toJson(){
+    return {
+      'idNodoInicial': idNodoInicial,
+      'idNodoFinal': idNodoFinal,
+      'xinicio': _xinicio,
+      'xfinal': _xfinal,
+      'yinicio': _yinicio,
+      'yfinal': _yfinal,
+      'peso': peso,
+      'ida': _ida,
+      'dirigido': dirigido,
+    };
+  }
+
+    static ModeloArista fromJson(Map<String, dynamic> json, item) {
+    return ModeloArista(
+      json['idNodoInicial'],
+      json['idNodoFinal'],
+      json['xinicio'],
+      json['xfinal'],
+      json['yinicio'],
+      json['yfinal'],
+      json['peso'],
+      json['ida'],
+      json['dirigido'],
+    );
   }
 }
