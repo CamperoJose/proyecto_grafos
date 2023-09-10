@@ -57,9 +57,14 @@ class _HomeState extends State<Home> {
               child: Icon(Icons.table_chart_outlined),
               backgroundColor: Colors.orange.shade600,
               onTap: () {
+                print(matrixTrueFalse);
+                print(matrixArists);
+                print(values);
+
+                print(vNodo);
+                print(vUniones);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => MatrixView()));
-                
               },
               label: 'Generar Matriz',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
@@ -69,7 +74,6 @@ class _HomeState extends State<Home> {
               child: Icon(Icons.download_sharp),
               backgroundColor: Colors.red.shade800,
               onTap: () {
-
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -94,8 +98,8 @@ class _HomeState extends State<Home> {
                           child: const Text('Aceptar'),
                           onPressed: () {
                             if (nuevoNombre.isNotEmpty) {
-                              crearArchivoEnCarpeta('$nuevoNombre.json', generarEstructuraJson(), context);
-
+                              crearArchivoEnCarpeta('$nuevoNombre.json',
+                                  generarEstructuraJson(), context);
                             }
                           },
                         ),
@@ -103,7 +107,6 @@ class _HomeState extends State<Home> {
                     );
                   },
                 );
-
               },
               label: 'Descargar Grafo',
               labelStyle: TextStyle(fontWeight: FontWeight.w500),
@@ -114,10 +117,9 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.green.shade500,
               onTap: () {
                 setState(() {
-                  
                   subirArchivo(context).then((value) => setState(() {
-                    print("Archivo subido");
-                  }));
+                        print("Archivo subido");
+                      }));
                 });
               },
               label: 'Subir Grafo',
@@ -143,15 +145,6 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     Navigator.push(
-        //         context, MaterialPageRoute(builder: (context) => MatrixView()));
-        //   },
-        //   child: const Icon(Icons.table_chart_outlined),
-        //   backgroundColor: Colors.lightBlue.shade900,
-        // ),
 
         body: Stack(
           children: <Widget>[
@@ -211,34 +204,49 @@ class _HomeState extends State<Home> {
                                       );
                                     } else {
                                       vNodo.add(ModeloNodo(
-                                          idNode.toString(),
+                                          (vNodo.length + 1).toString(),
                                           des.globalPosition.dx,
                                           des.globalPosition.dy,
                                           30,
                                           _msgNodo.text));
 
+                                      print(matrixTrueFalse);
+                                      print(matrixArists);
+
                                       setState(() {
                                         values.add(_msgNodo.text);
-                                        idNode++;
 
                                         if (matrixTrueFalse.length == 0) {
+                                          print("llega 1");
                                           matrixTrueFalse.add([0]);
                                         } else {
+                                          print(
+                                              "llega 2. tamanio matriz: ${matrixTrueFalse.length}");
                                           for (int i = 0;
                                               i < matrixTrueFalse.length;
                                               i++) {
+                                            print("agregando en i = $i");
                                             matrixTrueFalse[i].add(0);
+                                            print(matrixTrueFalse);
                                           }
+
+                                          print("termina primer for");
 
                                           List<int> list = [];
                                           for (int i = 0;
-                                              i < matrixTrueFalse.length + 1;
+                                              i < matrixTrueFalse.length+1;
                                               i++) {
                                             list.add(0);
                                           }
 
+                                          print("termina segundo for");
+
                                           matrixTrueFalse.add(list);
+
+                                          print(matrixTrueFalse);
                                         }
+
+                                        print("llega 3");
 
                                         if (matrixArists.length == 0) {
                                           matrixArists.add([0]);

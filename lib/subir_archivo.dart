@@ -60,8 +60,8 @@ Future<void> subirArchivo(BuildContext context) async {
     matrixTrueFalse = List.generate(
         jsonData['matrixTrueFalse'].length,
         (i) => List.generate(
-            jsonData['matrixTrueFalse'].length, (j) => 0, growable: false),
-        growable: false);
+            jsonData['matrixTrueFalse'].length, (j) => 0, growable: true),
+        growable: true);
 
 
 
@@ -78,16 +78,13 @@ Future<void> subirArchivo(BuildContext context) async {
     matrixArists = List.generate(
         jsonData['matrixArists'].length,
         (i) => List.generate(
-            jsonData['matrixArists'].length, (j) => 0, growable: false),
-        growable: false);
+            jsonData['matrixArists'].length, (j) => 0, growable: true),
+        growable: true);
 
     for(int i=0; i<jsonData['matrixArists'].length; i++){
       for(int j=0; j<jsonData['matrixArists'].length; j++){
-        if(jsonData['matrixArists'][i][j] == 1){
-          matrixArists[i][j] = 1;
-        }else{
-          matrixArists[i][j] = 0;
-        }
+        matrixArists[i][j] = jsonData['matrixArists'][i][j];
+        
       }
     }
 
@@ -110,9 +107,9 @@ Future<void> subirArchivo(BuildContext context) async {
       builder: (context) {
         return AlertDialog(
           title: Text('Archivo Cargado'),
-          // content: Text(
-          //     'El archivo JSON se ha cargado con éxito y los datos se han asignado a las variables.'),
-          content: Text(vUniones.toString()),
+           content: Text(
+               'El archivo JSON se ha cargado con éxito y los datos se han asignado a las variables.'),
+          //content: Text(vUniones.toString()),
           actions: [
             TextButton(
               onPressed: () {

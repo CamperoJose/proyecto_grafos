@@ -26,8 +26,8 @@ Future<void> crearArchivoEnCarpeta(String filename, dynamic contenido, context) 
       builder: (context) {
         return AlertDialog(
           title: Text('Archivo Guardado'),
-          //content: Text('El archivo $filename se ha guardado con éxito en la carpeta de descargas.'),
-          content: Text(vUniones.toString()),
+          content: Text('El archivo $filename se ha guardado con éxito en la carpeta de descargas.'),
+          //content: Text(vUniones.toString()),
           actions: [
             TextButton(
               onPressed: () {
