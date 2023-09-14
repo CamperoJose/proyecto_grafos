@@ -1,13 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
+import 'package:proyecto_grafos/components/my_speed_dial.dart';
 import 'package:proyecto_grafos/generar_estructura_json.dart';
 import 'package:proyecto_grafos/save_json.dart';
 import 'package:proyecto_grafos/subir_archivo.dart';
 import 'package:proyecto_grafos/views/matrix_view.dart';
-import 'package:proyecto_grafos/views/vista_manual.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
@@ -15,9 +14,7 @@ import '../classes/modelo_arista.dart';
 import '../classes/modelo_nodo.dart';
 import 'matriz.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -47,121 +44,17 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.white,
 
         //floating usando speedial:
-        floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.view_list,
-          animatedIconTheme: IconThemeData(size: 22.0),
-          backgroundColor: Colors.lightBlue.shade900,
-          visible: true,
-          children: [
-            SpeedDialChild(
-              child: Icon(Icons.table_chart_outlined),
-              backgroundColor: Colors.orange.shade600,
-              onTap: () {
-                print(matrixTrueFalse);
-                print(matrixArists);
-                print(values);
-
-                print(vNodo);
-                print(vUniones);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MatrixView()));
-              },
-              label: 'Generar Matriz',
-              labelStyle: TextStyle(fontWeight: FontWeight.w500),
-              labelBackgroundColor: Colors.orange.shade600,
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.download_sharp),
-              backgroundColor: Colors.red.shade800,
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String nuevoNombre =
-                        ''; // Variable para almacenar el nuevo nombre de archivo.
-
-                    return AlertDialog(
-                      title: const Text('Ingrese el nombre del archivo:'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          TextField(
-                            onChanged: (text) {
-                              nuevoNombre =
-                                  text; // Actualizar el nuevo nombre cuando el usuario escriba.
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Aceptar'),
-                          onPressed: () {
-                            if (nuevoNombre.isNotEmpty) {
-                              crearArchivoEnCarpeta('$nuevoNombre.json',
-                                  generarEstructuraJson(), context);
-                            }
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              label: 'Descargar Grafo',
-              labelStyle: TextStyle(fontWeight: FontWeight.w500),
-              labelBackgroundColor: Colors.red.shade800,
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.upload),
-              backgroundColor: Colors.green.shade500,
-              onTap: () {
-                setState(() {
-                  subirArchivo(context).then((value) => setState(() {
-                        print("Archivo subido");
-                      }));
-                });
-              },
-              label: 'Subir Grafo',
-              labelStyle: TextStyle(fontWeight: FontWeight.w500),
-              labelBackgroundColor: Colors.green.shade500,
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.book_sharp),
-              backgroundColor: Colors.purple.shade400,
-              onTap: () async {
-                //leer pdf desde el link https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing:
-                const url =
-                    'https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing';
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {
-                  throw 'No se pudo abrir el PDF';
-                }
-              },
-              label: 'Manual',
-              labelStyle: TextStyle(fontWeight: FontWeight.w500),
-              labelBackgroundColor: Colors.purple.shade400,
-            ),
-          ],
-        ),
-
+        floatingActionButton: MySpeedDial(context).build(context),
         body: Stack(
           children: <Widget>[
-            CustomPaint(
-              painter: Union(vUniones),
-            ),
-            CustomPaint(
-              painter: Nodo(vNodo),
-            ),
+            CustomPaint(painter: Union(vUniones)),
+            CustomPaint(painter: Nodo(vNodo)),
             GestureDetector(
               onPanDown: (des) {
                 setState(
                   () {
                     switch (modo) {
                       case 1: //agregar nodo
-
-                        // mostrar input de entrada de valkor de _mgsNodo:
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -209,46 +102,26 @@ class _HomeState extends State<Home> {
                                           des.globalPosition.dy,
                                           30,
                                           _msgNodo.text));
-
-                                      print(matrixTrueFalse);
-                                      print(matrixArists);
-
                                       setState(() {
                                         values.add(_msgNodo.text);
 
-                                        if (matrixTrueFalse.length == 0) {
-                                          print("llega 1");
+                                        if (matrixTrueFalse.isEmpty) {
                                           matrixTrueFalse.add([0]);
                                         } else {
-                                          print(
-                                              "llega 2. tamanio matriz: ${matrixTrueFalse.length}");
                                           for (int i = 0;
                                               i < matrixTrueFalse.length;
                                               i++) {
-                                            print("agregando en i = $i");
                                             matrixTrueFalse[i].add(0);
-                                            print(matrixTrueFalse);
                                           }
-
-                                          print("termina primer for");
-
                                           List<int> list = [];
                                           for (int i = 0;
                                               i < matrixTrueFalse.length+1;
                                               i++) {
                                             list.add(0);
                                           }
-
-                                          print("termina segundo for");
-
                                           matrixTrueFalse.add(list);
-
-                                          print(matrixTrueFalse);
                                         }
-
-                                        print("llega 3");
-
-                                        if (matrixArists.length == 0) {
+                                        if (matrixArists.isEmpty) {
                                           matrixArists.add([0]);
                                         } else {
                                           for (int i = 0;
@@ -269,9 +142,6 @@ class _HomeState extends State<Home> {
                                       });
 
                                       Navigator.of(context).pop();
-                                      print("a: $matrixTrueFalse");
-
-                                      print("b: $matrixArists");
                                     }
                                   },
                                 ),
