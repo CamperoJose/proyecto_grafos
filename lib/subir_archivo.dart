@@ -59,17 +59,15 @@ Future<void> subirArchivo(BuildContext context) async {
     // crear la matrioz matrixTrueFalse de tamaño jsonData['matrixTrueFalse']:
     matrixTrueFalse = List.generate(
         jsonData['matrixTrueFalse'].length,
-        (i) => List.generate(
-            jsonData['matrixTrueFalse'].length, (j) => 0, growable: true),
+        (i) => List.generate(jsonData['matrixTrueFalse'].length, (j) => 0,
+            growable: true),
         growable: true);
 
-
-
-    for(int i=0; i<jsonData['matrixTrueFalse'].length; i++){
-      for(int j=0; j<jsonData['matrixTrueFalse'].length; j++){
-        if(jsonData['matrixTrueFalse'][i][j] == 1){
+    for (int i = 0; i < jsonData['matrixTrueFalse'].length; i++) {
+      for (int j = 0; j < jsonData['matrixTrueFalse'].length; j++) {
+        if (jsonData['matrixTrueFalse'][i][j] == 1) {
           matrixTrueFalse[i][j] = 1;
-        }else{
+        } else {
           matrixTrueFalse[i][j] = 0;
         }
       }
@@ -77,14 +75,13 @@ Future<void> subirArchivo(BuildContext context) async {
 
     matrixArists = List.generate(
         jsonData['matrixArists'].length,
-        (i) => List.generate(
-            jsonData['matrixArists'].length, (j) => 0, growable: true),
+        (i) => List.generate(jsonData['matrixArists'].length, (j) => 0,
+            growable: true),
         growable: true);
 
-    for(int i=0; i<jsonData['matrixArists'].length; i++){
-      for(int j=0; j<jsonData['matrixArists'].length; j++){
+    for (int i = 0; i < jsonData['matrixArists'].length; i++) {
+      for (int j = 0; j < jsonData['matrixArists'].length; j++) {
         matrixArists[i][j] = jsonData['matrixArists'][i][j];
-        
       }
     }
 
@@ -107,13 +104,16 @@ Future<void> subirArchivo(BuildContext context) async {
       builder: (context) {
         return AlertDialog(
           title: Text('Archivo Cargado'),
-           content: Text(
-               'El archivo JSON se ha cargado con éxito y los datos se han asignado a las variables.'),
+          content: Text(
+              'El archivo JSON se ha cargado con éxito y los datos se han asignado a las variables.'),
           //content: Text(vUniones.toString()),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+
+                  Navigator.of(context).pop();
+                
+                
               },
               child: Text('Aceptar'),
             ),
