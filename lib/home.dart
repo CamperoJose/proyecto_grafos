@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_grafos/components/custom_app_bar.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
 import 'package:proyecto_grafos/components/my_alert_error_dialog.dart';
+import 'package:proyecto_grafos/components/my_botton_app_bar.dart';
 import 'package:proyecto_grafos/components/my_speed_dial.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
@@ -243,11 +244,6 @@ class _HomeState extends State<Home> {
                                         int pos = values.indexWhere((element) => element == objE.mensaje);
                                         values[pos] = _textFieldController2.text;
                                         objE.mensaje = _textFieldController2.text;
-
-
-                                        
-
-
                                       });
                                       _textFieldController2.text = "";
                                       Navigator.of(context).pop();
@@ -258,9 +254,8 @@ class _HomeState extends State<Home> {
                             },
                           );
                         }
-
                         break;
-                      case 6:
+                      case 6://limpiar todo:
                         setState(() {
                           vNodo = [];
                           vUniones = [];
@@ -276,33 +271,20 @@ class _HomeState extends State<Home> {
               onPanUpdate: (des) {
                 setState(() {
                   switch (modo) {
-                    case 3:
-                      int pos = estaSobreNodo(
-                          des.globalPosition.dx, des.globalPosition.dy);
-
+                    case 3://mover objetos
+                      int pos = estaSobreNodo(des.globalPosition.dx, des.globalPosition.dy);
                       if (pos > 0) {
-                        ModeloNodo objS = vNodo
-                            .where((element) => int.parse(element.id) == pos)
-                            .first;
-
-                        var listJoins = vUniones
-                            .where(
-                                (element) => element.idNodoInicial == objS.id)
-                            .toList();
-                        var listJoins2 = vUniones
-                            .where((element) => element.idNodoFinal == objS.id)
-                            .toList();
-
+                        ModeloNodo objS = vNodo.where((element) => int.parse(element.id) == pos).first;
+                        var listJoins = vUniones.where((element) => element.idNodoInicial == objS.id).toList();
+                        var listJoins2 = vUniones.where((element) => element.idNodoFinal == objS.id).toList();
                         for (var union in listJoins) {
                           union.xinicio = des.globalPosition.dx;
                           union.yinicio = des.globalPosition.dy;
                         }
-
                         for (var union in listJoins2) {
                           union.xfinal = des.globalPosition.dx;
                           union.yfinal = des.globalPosition.dy;
                         }
-
                         objS.x = des.globalPosition.dx;
                         objS.y = des.globalPosition.dy;
                       }
@@ -313,263 +295,18 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.lightBlue.shade900,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      modo = 1;
-                    });
-                  },
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: modo == 2 ? Colors.white : Colors.transparent,
-                    ),
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: modo == 2
-                            ? const BorderRadius.only(
-                                topRight: Radius.circular(30),
-                              )
-                            : const BorderRadius.only(
-                                bottomRight: Radius.circular(30),
-                                bottomLeft: Radius.circular(30),
-                              ),
-                        color: modo == 1
-                            ? Colors.white
-                            : Colors.lightBlue.shade900,
-                      ),
-                      child: Icon(
-                        Icons.add_sharp,
-                        size: modo == 1 ? 40 : 30,
-                        color: modo == 1 ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      modo = 2;
-                    });
-                  },
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: modo == 3 || modo == 1
-                          ? Colors.white
-                          : Colors.transparent,
-                    ),
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: modo == 1
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                              )
-                            : modo == 3
-                                ? const BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                  )
-                                : const BorderRadius.only(
-                                    bottomRight: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
-                                  ),
-                        color: modo == 2
-                            ? Colors.white
-                            : Colors.lightBlue.shade900,
-                      ),
-                      child: Icon(
-                        Icons.delete,
-                        size: modo == 2 ? 40 : 30,
-                        color: modo == 2 ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      modo = 3;
-                    });
-                  },
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: modo == 4 || modo == 2
-                          ? Colors.white
-                          : Colors.transparent,
-                    ),
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        //sombra para esquinas inferiores con box shadow
-                        borderRadius: modo == 2
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                              )
-                            : modo == 4
-                                ? const BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                  )
-                                : const BorderRadius.only(
-                                    bottomRight: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
-                                  ),
-                        color: modo == 3
-                            ? Colors.white
-                            : Colors.lightBlue.shade900,
-                      ),
-                      child: Icon(
-                        Icons.move_up,
-                        size: modo == 3 ? 40 : 30,
-                        color: modo == 3 ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      modo = 4;
-                    });
-                  },
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: modo == 5 || modo == 3
-                          ? Colors.white
-                          : Colors.transparent,
-                    ),
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: modo == 3
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                              )
-                            : modo == 5
-                                ? const BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                  )
-                                : const BorderRadius.only(
-                                    bottomRight: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
-                                  ),
-                        color: modo == 4
-                            ? Colors.white
-                            : Colors.lightBlue.shade900,
-                      ),
-                      child: Icon(
-                        Icons.linear_scale,
-                        size: modo == 4 ? 40 : 30,
-                        color: modo == 4 && joinModo == 1
-                            ? Colors.green
-                            : modo == 4 && joinModo == 2
-                                ? Colors.orange
-                                : Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      modo = 5;
-                    });
-                  },
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: modo == 4 || modo == 6
-                          ? Colors.white
-                          : Colors.transparent,
-                    ),
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: modo == 4
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                              )
-                            : modo == 6
-                                ? const BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                  )
-                                : const BorderRadius.only(
-                                    bottomRight: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
-                                  ),
-                        color: modo == 5
-                            ? Colors.white
-                            : Colors.lightBlue.shade900,
-                      ),
-                      child: Icon(
-                        Icons.edit,
-                        size: modo == 5 ? 40 : 30,
-                        color: modo == 5 && joinModo == 1
-                            ? Colors.green
-                            : modo == 5 && joinModo == 2
-                                ? Colors.orange
-                                : Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      modo = 6;
-                    });
-                  },
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: modo == 5 ? Colors.white : Colors.transparent,
-                    ),
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: modo == 5
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                              )
-                            : const BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                        color: modo == 6
-                            ? Colors.white
-                            : Colors.lightBlue.shade900,
-                      ),
-                      child: Icon(
-                        Icons.wind_power,
-                        size: modo == 6 ? 40 : 30,
-                        color: modo == 6 ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        
+        bottomNavigationBar: MyBottomAppBar(
+          modo: modo,
+          joinModo: joinModo,
+          onTap: (newMode) {
+            setState(() {
+              modo = newMode;
+            });
+          },
         ),
+
+
       ),
     );
   }
