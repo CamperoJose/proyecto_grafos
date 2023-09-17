@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:proyecto_grafos/components/custom_app_bar.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
+import 'package:proyecto_grafos/components/my_alert_error_dialog.dart';
 import 'package:proyecto_grafos/components/my_speed_dial.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
-import 'components/figures/formas.dart';
+import 'components/figures/union.dart';
 import '../classes/modelo_arista.dart';
 import '../classes/modelo_nodo.dart';
 import 'matriz.dart';
@@ -26,9 +26,8 @@ class _HomeState extends State<Home> {
   bool isDirected = false;
 
   void cambioEstado(int n) {
-    modo = n;
     setState(() {
-      print("Nuevo estado");
+      modo = n;
     });
   }
 
@@ -39,9 +38,6 @@ class _HomeState extends State<Home> {
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
         appBar: CustomAppBar(context: context), 
-        
-
-        //floating usando speedial:
         floatingActionButton: MySpeedDial(context).build(context),
         body: Stack(
           children: <Widget>[
@@ -49,8 +45,7 @@ class _HomeState extends State<Home> {
             CustomPaint(painter: Nodo(vNodo)),
             GestureDetector(
               onPanDown: (des) {
-                setState(
-                  () {
+                setState(() {
                     switch (modo) {
                       case 1: //agregar nodo
                         showDialog(
@@ -63,82 +58,48 @@ class _HomeState extends State<Home> {
                                 decoration: const InputDecoration(
                                     hintText: "Ingrese el valor aquí"),
                               ),
+                              
                               actions: <Widget>[
                                 ElevatedButton(
                                   child: const Text('Aceptar'),
                                   onPressed: () {
-                                    //verificar si ya existe nodo con ese nombre:
-                                    var listNodos = vNodo
-                                        .where((element) =>
-                                            element.mensaje == _msgNodo.text)
-                                        .toList();
-
+                                    var listNodos = vNodo.where((element) =>element.mensaje == _msgNodo.text).toList();
                                     if (listNodos.isNotEmpty) {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                                'Ya existe un nodo con ese nombre'),
-                                            content: const Text(
-                                                'Por favor ingrese otro nombre'),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                child: const Text('Aceptar'),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
+                                          return MyAlertErrorDialog(
+                                            title: 'Ya existe un nodo con ese nombre', content: 'Por favor ingrese otro nombre'
                                           );
                                         },
                                       );
                                     } else {
-                                      vNodo.add(ModeloNodo(
-                                          (vNodo.length + 1).toString(),
-                                          des.globalPosition.dx,
-                                          des.globalPosition.dy,
-                                          30,
-                                          _msgNodo.text));
+                                      vNodo.add(ModeloNodo((vNodo.length + 1).toString(),des.globalPosition.dx,des.globalPosition.dy,30,_msgNodo.text));
                                       setState(() {
                                         values.add(_msgNodo.text);
-
-                                        if (matrixTrueFalse.isEmpty) {
-                                          matrixTrueFalse.add([0]);
-                                        } else {
-                                          for (int i = 0;
-                                              i < matrixTrueFalse.length;
-                                              i++) {
+                                        if (matrixTrueFalse.isEmpty) matrixTrueFalse.add([0]);
+                                        else {
+                                          for (int i = 0; i < matrixTrueFalse.length; i++) {
                                             matrixTrueFalse[i].add(0);
                                           }
                                           List<int> list = [];
-                                          for (int i = 0;
-                                              i < matrixTrueFalse.length + 1;
-                                              i++) {
+                                          for (int i = 0; i < matrixTrueFalse.length + 1; i++) {
                                             list.add(0);
                                           }
                                           matrixTrueFalse.add(list);
                                         }
-                                        if (matrixArists.isEmpty) {
-                                          matrixArists.add([0]);
-                                        } else {
-                                          for (int i = 0;
-                                              i < matrixArists.length;
-                                              i++) {
+                                        if (matrixArists.isEmpty) matrixArists.add([0]);
+                                        else {
+                                          for (int i = 0; i < matrixArists.length; i++) {
                                             matrixArists[i].add(0);
                                           }
-
                                           List<int> list = [];
-                                          for (int i = 0;
-                                              i < matrixArists.length + 1;
-                                              i++) {
+                                          for (int i = 0; i < matrixArists.length + 1; i++) {
                                             list.add(0);
                                           }
-
                                           matrixArists.add(list);
                                         }
                                       });
-
                                       Navigator.of(context).pop();
                                     }
                                   },
@@ -147,52 +108,31 @@ class _HomeState extends State<Home> {
                             );
                           },
                         );
-
                         break;
-                      case 2:
-                        int pos = estaSobreNodo(
-                            des.globalPosition.dx, des.globalPosition.dy);
+                      case 2://ELIMINAR NODO
+                        int pos = estaSobreNodo(des.globalPosition.dx, des.globalPosition.dy);
                         if (pos > 0) {
-                          ModeloNodo objD = vNodo
-                              .where((element) => int.parse(element.id) == pos)
-                              .first;
-
-                          var listJoins = vUniones
-                              .where((element) =>
-                                  element.idNodoInicial == objD.id ||
-                                  element.idNodoFinal == objD.id)
-                              .toList();
-
+                          ModeloNodo objD = vNodo.where((element) => int.parse(element.id) == pos).first;
+                          var listJoins = vUniones.where((element) => element.idNodoInicial == objD.id || element.idNodoFinal == objD.id).toList();
                           for (var union in listJoins) {
                             vUniones.remove(union);
                           }
-
-                          vNodo.removeWhere(
-                              (element) => int.parse(element.id) == pos);
-
+                          vNodo.removeWhere((element) => int.parse(element.id) == pos);
                           int posList = values.indexOf(objD.mensaje);
-
                           values.remove(objD.mensaje);
-
                           matrixTrueFalse.removeAt(posList);
                           for (int i = 0; i < matrixTrueFalse.length; i++) {
                             matrixTrueFalse[i].removeAt(posList);
                           }
-
                           matrixArists.removeAt(posList);
-
                           for (int i = 0; i < matrixArists.length; i++) {
                             matrixArists[i].removeAt(posList);
                           }
                         }
                         break;
-                      case 4:
-                        int pos = estaSobreNodo(
-                            des.globalPosition.dx, des.globalPosition.dy);
-                        ModeloNodo objN = vNodo
-                            .where((element) => int.parse(element.id) == pos)
-                            .first;
-
+                      case 4://AGREGANDO ARISTA
+                        int pos = estaSobreNodo(des.globalPosition.dx, des.globalPosition.dy);
+                        ModeloNodo objN = vNodo.where((element) => int.parse(element.id) == pos).first;
                         if (joinModo == 1) {
                           xinicial = objN.x;
                           yinicial = objN.y;
@@ -208,23 +148,12 @@ class _HomeState extends State<Home> {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    TextField(
-                                      controller: _textFieldController,
-                                      decoration: InputDecoration(
-                                          hintText: "Ingrese el peso aquí"),
-                                    ),
-
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-
-                                    //combo box para elegir si es dirigido o no
-
+                                    TextField(controller: _textFieldController,
+                                      decoration: const InputDecoration(hintText: "Ingrese el peso aquí"),),
+                                    const SizedBox(height: 10),
                                     GraphTypeDropdown(
                                       initialValue: isDirected,
-                                      onChanged: (newValue) {
-                                        isDirected = newValue;
-                                      },
+                                      onChanged: (newValue) {isDirected = newValue;},
                                     ),
                                   ],
                                 ),
@@ -232,64 +161,26 @@ class _HomeState extends State<Home> {
                                   ElevatedButton(
                                     child: const Text('Aceptar'),
                                     onPressed: () {
-                                      var listJoins = vUniones
-                                          .where((element) =>
-                                              element.idNodoFinal == objN.id &&
-                                              element.idNodoInicial ==
-                                                  idInicial)
-                                          .toList();
-
-                                      var listJoins2 = vUniones
-                                          .where((element) =>
-                                              element.idNodoFinal ==
-                                                  idInicial &&
-                                              element.idNodoInicial == objN.id)
-                                          .toList();
-
-                                      if (listJoins.isEmpty &&
-                                          listJoins2.isEmpty &&
-                                          idInicial == objN.id) {
-                                        print("SE GENERA LOOP");
-                                      }
-
+                                      var listJoins = vUniones.where((element) => element.idNodoFinal == objN.id && element.idNodoInicial == idInicial).toList();
+                                      var listJoins2 = vUniones.where((element) => element.idNodoFinal == idInicial && element.idNodoInicial == objN.id).toList();
                                       if (listJoins.isEmpty &&
                                           listJoins2.isEmpty &&
                                           idInicial != objN.id) {
-                                        print("LLEGA AL IF 1");
                                         setState(() {
                                           xfinal = objN.x;
                                           yfinal = objN.y;
-
                                           if (joinModo == 2 &&
                                               xinicial != -1 &&
                                               yinicial != -1 &&
                                               xfinal != -1 &&
                                               yfinal != -1) {
-                                            vUniones.add(ModeloArista(
-                                                idInicial,
-                                                objN.id,
-                                                xinicial,
-                                                yinicial,
-                                                xfinal,
-                                                yfinal,
-                                                _textFieldController.text,
-                                                true,
-                                                isDirected));
-
-                                            int posInicial = values
-                                                .indexOf(nodoInicial.mensaje);
-                                            int posFinal =
-                                                values.indexOf(objN.mensaje);
-                                            matrixTrueFalse[posInicial]
-                                                [posFinal] = 1;
-
-                                            matrixArists[posInicial][posFinal] =
-                                                int.parse(
-                                                    _textFieldController.text);
-
+                                            vUniones.add(ModeloArista(idInicial, objN.id, xinicial, yinicial, xfinal, yfinal, _textFieldController.text, true, isDirected));
+                                            int posInicial = values.indexOf(nodoInicial.mensaje);
+                                            int posFinal = values.indexOf(objN.mensaje);
+                                            matrixTrueFalse[posInicial][posFinal] = 1;
+                                            matrixArists[posInicial][posFinal] = int.parse(_textFieldController.text);
                                             _textFieldController.text = "";
                                           }
-
                                           joinModo = 1;
                                           xinicial = -1;
                                           yinicial = -1;
@@ -297,56 +188,18 @@ class _HomeState extends State<Home> {
                                           yfinal = -1;
                                         });
                                       }
-
-                                      if (listJoins.isEmpty &&
-                                              listJoins2.isNotEmpty ||
-                                          (listJoins.isEmpty &&
-                                              listJoins2.isEmpty &&
-                                              idInicial == objN.id)) {
-                                        print("LLEGA AL IF 2");
+                                      if (listJoins.isEmpty && listJoins2.isNotEmpty || (listJoins.isEmpty &&listJoins2.isEmpty &&idInicial == objN.id)) {
                                         setState(() {
                                           xfinal = objN.x;
                                           yfinal = objN.y;
-
                                           bool a = false;
-                                          if(xinicial == xfinal && yinicial == yfinal){
-                                            a = true;
-                                          }
-
-
-                                          if (joinModo == 2 &&
-                                              xinicial != -1 &&
-                                              yinicial != -1 &&
-                                              xfinal != -1 &&
-                                              yfinal != -1) {
-                                            print("llega aqui2");
-                                            vUniones.add(ModeloArista(
-                                                idInicial,
-                                                objN.id,
-                                                xinicial,
-                                                yinicial,
-                                                xfinal,
-                                                yfinal,
-                                                _textFieldController.text,
-                                                a,
-                                                isDirected));
-
-                                            print("llega aqui 3");
-
-                                            int posInicial = values
-                                                .indexOf(nodoInicial.mensaje);
-                                            int posFinal =
-                                                values.indexOf(objN.mensaje);
-                                            print("llega aqui 4");
-                                            matrixTrueFalse[posInicial]
-                                                [posFinal] = 1;
-                                            matrixArists[posInicial][posFinal] =
-                                                int.parse(
-                                                    _textFieldController.text);
-                                            print("llega aqui 5");
-
-                                            print(vUniones.toList());
-
+                                          if(xinicial == xfinal && yinicial == yfinal) a = true;
+                                          if (joinModo == 2 && xinicial != -1 && yinicial != -1 && xfinal != -1 && yfinal != -1) {
+                                            vUniones.add(ModeloArista(idInicial, objN.id, xinicial, yinicial, xfinal, yfinal, _textFieldController.text, a, isDirected));
+                                            int posInicial = values .indexOf(nodoInicial.mensaje);
+                                            int posFinal = values.indexOf(objN.mensaje);
+                                            matrixTrueFalse[posInicial][posFinal] = 1;
+                                            matrixArists[posInicial][posFinal] = int.parse(_textFieldController.text);
                                             _textFieldController.text = "";
                                           }
                                           joinModo = 1;
@@ -356,7 +209,6 @@ class _HomeState extends State<Home> {
                                           yfinal = -1;
                                         });
                                       }
-
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -365,20 +217,12 @@ class _HomeState extends State<Home> {
                             },
                           );
                         }
-
                         break;
-
-                      case 5:
-                        int pos = estaSobreNodo(
-                            des.globalPosition.dx, des.globalPosition.dy);
-                        ModeloNodo objE = vNodo
-                            .where((element) => int.parse(element.id) == pos)
-                            .first;
-                        if (pos > 1) {
-                          ModeloNodo objE = vNodo
-                              .where((element) => int.parse(element.id) == pos)
-                              .first;
-
+                      case 5://EDITAR NODO
+                        int pos = estaSobreNodo(des.globalPosition.dx, des.globalPosition.dy);
+                        ModeloNodo objE = vNodo.where((element) => int.parse(element.id) == pos).first;
+                        if (pos > 0) {
+                          ModeloNodo objE = vNodo.where((element) => int.parse(element.id) == pos).first;
                           _textFieldController2.text = objE.mensaje;
 
                           showDialog(
@@ -396,15 +240,18 @@ class _HomeState extends State<Home> {
                                     child: Text('Aceptar'),
                                     onPressed: () {
                                       setState(() {
-                                        objE.mensaje =
-                                            _textFieldController2.text;
-                                      });
+                                        int pos = values.indexWhere((element) => element == objE.mensaje);
+                                        values[pos] = _textFieldController2.text;
+                                        objE.mensaje = _textFieldController2.text;
 
+
+                                        
+
+
+                                      });
                                       _textFieldController2.text = "";
                                       Navigator.of(context).pop();
                                     },
-
-                                    // Aquí puedes hacer algo con el texto ingresado por el usuario
                                   ),
                                 ],
                               );
