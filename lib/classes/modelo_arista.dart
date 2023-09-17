@@ -31,6 +31,8 @@ class ModeloArista {
     _xinicio = value;
   }
 
+  
+
   @override
   String toString() {
     return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}, _xinicio: $_xinicio, _xfinal: $_xfinal, _yinicio: $_yinicio, _yfinal: $_yfinal';

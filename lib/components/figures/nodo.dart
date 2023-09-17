@@ -6,7 +6,7 @@ class Nodo extends CustomPainter {
   Nodo(this.vNodo);
 
   _drawNode(Canvas canvas, Paint paint, double x, double y, double radius) {
-    paint.color = Colors.purple;
+    paint.color = Colors.purple.shade900;
     canvas.drawCircle(Offset(x, y), radius, paint);
   }
 
@@ -44,7 +44,7 @@ class Nodo extends CustomPainter {
       tp.layout();
     }
 
-    canvas.drawCircle(Offset(x, y), nodeWidth / 2, Paint()..color = Colors.purple);
+    canvas.drawCircle(Offset(x, y), nodeWidth / 2, Paint()..color = Colors.purple.shade400);
     tp.paint(canvas, Offset(x - tp.width / 2, y - tp.height / 2));
   }
 
