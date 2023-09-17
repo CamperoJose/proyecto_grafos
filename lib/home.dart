@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:proyecto_grafos/components/custom_app_bar.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
 import 'package:proyecto_grafos/components/my_speed_dial.dart';
 import 'components/figures/nodo.dart';
@@ -35,7 +36,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
+        appBar: CustomAppBar(context: context), 
+        
 
         //floating usando speedial:
         floatingActionButton: MySpeedDial(context).build(context),
