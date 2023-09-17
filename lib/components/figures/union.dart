@@ -9,21 +9,48 @@ class Union extends CustomPainter {
   List<ModeloArista> vUniones;
   Union(this.vUniones);
 
-  _msg(double x, double y, String msg, Canvas canvas) {
-    TextSpan span = TextSpan(
-        style: const TextStyle(
-            color: Colors.deepPurpleAccent,
-            fontSize: 25,
-            fontWeight: FontWeight.bold),
-        text: msg);
-    TextPainter tp = TextPainter(
-        text: span,
-        textAlign: TextAlign.left,
-        textDirection: TextDirection.ltr);
+_msg(double x, double y, String msg, Canvas canvas) {
+  final TextSpan span = TextSpan(
+    style: TextStyle(
+      color: Colors.deepPurpleAccent,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+    text: msg,
+  );
 
-    tp.layout();
-    tp.paint(canvas, Offset(x, y));
-  }
+  final TextPainter tp = TextPainter(
+    text: span,
+    textAlign: TextAlign.left,
+    textDirection: TextDirection.ltr,
+  );
+
+  tp.layout();
+
+  final double textWidth = tp.width;
+  final double textHeight = tp.height;
+  final double padding = 10.0; // Espacio de relleno alrededor del texto
+
+  final Rect rect = Rect.fromPoints(
+    Offset(x, y),
+    Offset(x + textWidth + 2 * padding, y + textHeight + 2 * padding),
+  );
+
+  final Paint paint = Paint()
+    ..color = Colors.lightBlue.shade100 // Color de fondo celeste claro
+    ..style = PaintingStyle.fill;
+
+  final double borderRadius = (textHeight + 2 * padding) / 2.0; // Bordes redondeados basados en la altura del texto
+
+  canvas.drawRRect(
+    RRect.fromRectAndRadius(rect, Radius.circular(borderRadius)),
+    paint,
+  );
+
+  tp.paint(canvas, Offset(x + padding, y + padding)); // Aplicar relleno al texto
+}
+
+
 
   @override
   void paint(Canvas canvas, Size size) {

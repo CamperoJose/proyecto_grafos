@@ -27,9 +27,7 @@ class _HomeState extends State<Home> {
   bool isDirected = false;
 
   void cambioEstado(int n) {
-    setState(() {
-      modo = n;
-    });
+    setState(() {modo = n;});
   }
 
   @override
@@ -53,29 +51,38 @@ class _HomeState extends State<Home> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('Ingrese el valor'),
-                              content: TextField(
-                                controller: _msgNodo,
-                                decoration: const InputDecoration(
-                                    hintText: "Ingrese el valor aquí"),
-                              ),
-                              
-                              actions: <Widget>[
-                                ElevatedButton(
-                                  child: const Text('Aceptar'),
-                                  onPressed: () {
-                                    var listNodos = vNodo.where((element) =>element.mensaje == _msgNodo.text).toList();
+                      title: Text('Ingrese el valor' , style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),),
+                      content: TextField(
+                        controller: _msgNodo,
+                        decoration: InputDecoration(hintText: "Ingrese el valor aquí"),
+                      ),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                                  primary: Colors.green,
+                                  onPrimary: Colors.white,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 32.0,
+                                    vertical: 12.0,
+                                  ),
+                                ),
+                                    child: Text('Aceptar', style: TextStyle(fontSize: 18.0),),
+                                    onPressed: () {
+                                    var listNodos =
+                                        vNodo.where((element) => element.mensaje == _msgNodo.text).toList();
                                     if (listNodos.isNotEmpty) {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
                                           return MyAlertErrorDialog(
-                                            title: 'Ya existe un nodo con ese nombre', content: 'Por favor ingrese otro nombre'
+                                            title: 'Ya existe un nodo con ese nombre',
+                                            content: 'Por favor ingrese otro nombre',
                                           );
                                         },
                                       );
                                     } else {
-                                      vNodo.add(ModeloNodo((vNodo.length + 1).toString(),des.globalPosition.dx,des.globalPosition.dy,30,_msgNodo.text));
+                                      vNodo.add(ModeloNodo((vNodo.length + 1).toString(),
+                                          des.globalPosition.dx, des.globalPosition.dy, 30, _msgNodo.text));
                                       setState(() {
                                         values.add(_msgNodo.text);
                                         if (matrixTrueFalse.isEmpty) matrixTrueFalse.add([0]);
@@ -225,7 +232,6 @@ class _HomeState extends State<Home> {
                         if (pos > 0) {
                           ModeloNodo objE = vNodo.where((element) => int.parse(element.id) == pos).first;
                           _textFieldController2.text = objE.mensaje;
-
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -299,14 +305,8 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: MyBottomAppBar(
           modo: modo,
           joinModo: joinModo,
-          onTap: (newMode) {
-            setState(() {
-              modo = newMode;
-            });
-          },
+          onTap: (newMode) {setState(() {modo = newMode;}); },
         ),
-
-
       ),
     );
   }
@@ -315,9 +315,7 @@ class _HomeState extends State<Home> {
     int pos = 0;
     for (var nodo in vNodo) {
       double dist = sqrt(pow(x1 - nodo.x, 2) + pow(y2 - nodo.y, 2));
-      if (dist <= nodo.radio) {
-        pos = int.parse(nodo.id);
-      }
+      if (dist <= nodo.radio) pos = int.parse(nodo.id);
     }
     return pos;
   }
