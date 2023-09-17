@@ -27,6 +27,7 @@ class Union extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print("llega union 1");
     Paint paint = Paint()
       ..style = PaintingStyle.fill
       ..color = Colors.black
@@ -36,39 +37,59 @@ class Union extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..color = Colors.black
       ..strokeWidth = 2;
+    print("llega union 2");
 
     for (var nodo in vUniones) {
       if (nodo.ida == true) {
-        paint.color = Colors.black;
-        canvas.drawLine(Offset(nodo.xinicio, nodo.yinicio),
-            Offset(nodo.xfinal, nodo.yfinal), paint);
 
-        // calculate angle of the line
-        double angle =
-            atan2(nodo.yfinal - nodo.yinicio, nodo.xfinal - nodo.xinicio);
+        if (nodo.xinicio == nodo.xfinal && nodo.yinicio == nodo.yfinal) {
+          print("el nodo va a si mismo");
+          // Dibuja un arco al mismo nodo
+          double radius = 30.0; // Cambia el radio según tus necesidades
+          canvas.drawArc(
+            Rect.fromCircle(
+              center: Offset(nodo.xinicio, nodo.yinicio),
+              radius: radius,
+            ),
+            0,
+            pi * 2, // Dibuja un círculo completo
+            false,
+            paint,
+          );
+        } else {
+          canvas.drawLine(Offset(nodo.xinicio, nodo.yinicio),
+              Offset(nodo.xfinal, nodo.yfinal), paint);
 
-        // calculate coordinates of the arrow tip
-        double arrowLength = 60;
-        double arrowX = nodo.xfinal - arrowLength * cos(angle);
-        double arrowY = nodo.yfinal - arrowLength * sin(angle);
+          // calculate angle of the line
+          double angle =
+              atan2(nodo.yfinal - nodo.yinicio, nodo.xfinal - nodo.xinicio);
 
-        // draw the arrow
+          // calculate coordinates of the arrow tip
+          double arrowLength = 60;
+          double arrowX = nodo.xfinal - arrowLength * cos(angle);
+          double arrowY = nodo.yfinal - arrowLength * sin(angle);
 
-        if (nodo.dirigido == true) {
-          Path path = Path();
-          path.moveTo(
-              nodo.xfinal - 30 * cos(angle), nodo.yfinal - 30 * sin(angle));
-          path.lineTo(arrowX + 15 * cos(angle + pi / 6),
-              arrowY + 15 * sin(angle + pi / 6));
-          path.lineTo(arrowX + 15 * cos(angle - pi / 6),
-              arrowY + 15 * sin(angle - pi / 6));
-          path.close();
-          canvas.drawPath(path, paint);
+          // draw the arrow
+
+          if (nodo.dirigido == true) {
+            Path path = Path();
+            path.moveTo(
+                nodo.xfinal - 30 * cos(angle), nodo.yfinal - 30 * sin(angle));
+            path.lineTo(arrowX + 15 * cos(angle + pi / 6),
+                arrowY + 15 * sin(angle + pi / 6));
+            path.lineTo(arrowX + 15 * cos(angle - pi / 6),
+                arrowY + 15 * sin(angle - pi / 6));
+            path.close();
+            canvas.drawPath(path, paint);
+          }
+
+          _msg((nodo.xfinal + nodo.xinicio) / 2,
+              (nodo.yinicio + nodo.yfinal) / 2, nodo.peso, canvas);
         }
-
-        _msg((nodo.xfinal + nodo.xinicio) / 2, (nodo.yinicio + nodo.yfinal) / 2,
-            nodo.peso, canvas);
       } else {
+
+        
+
         Path path = Path();
         path.moveTo(nodo.xinicio, nodo.yinicio);
         path.arcToPoint(
@@ -100,8 +121,6 @@ class Union extends CustomPainter {
         }
 
         // draw the line and arrow
-        
-        
 
         PathMetrics pathMetrics = path.computeMetrics();
         PathMetric pathMetric = pathMetrics.elementAt(0);
@@ -109,7 +128,6 @@ class Union extends CustomPainter {
             pathMetric.getTangentForOffset(pathMetric.length / 2)!;
         Offset arrowPoint = tangent.position;
         double angle2 = tangent.angle;
-
 
         // draw the text
         _msg(arrowPoint.dx - 30 * cos(angle), arrowPoint.dy - 30 * sin(angle2),

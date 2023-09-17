@@ -3,18 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
 import 'package:proyecto_grafos/components/my_speed_dial.dart';
-import 'package:proyecto_grafos/generar_estructura_json.dart';
-import 'package:proyecto_grafos/save_json.dart';
-import 'package:proyecto_grafos/subir_archivo.dart';
-import 'package:proyecto_grafos/views/matrix_view.dart';
 import 'components/figures/nodo.dart';
 import 'data.dart';
 import 'components/figures/formas.dart';
 import '../classes/modelo_arista.dart';
 import '../classes/modelo_nodo.dart';
 import 'matriz.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -115,7 +109,7 @@ class _HomeState extends State<Home> {
                                           }
                                           List<int> list = [];
                                           for (int i = 0;
-                                              i < matrixTrueFalse.length+1;
+                                              i < matrixTrueFalse.length + 1;
                                               i++) {
                                             list.add(0);
                                           }
@@ -249,7 +243,15 @@ class _HomeState extends State<Home> {
                                           .toList();
 
                                       if (listJoins.isEmpty &&
-                                          listJoins2.isEmpty) {
+                                          listJoins2.isEmpty &&
+                                          idInicial == objN.id) {
+                                        print("SE GENERA LOOP");
+                                      }
+
+                                      if (listJoins.isEmpty &&
+                                          listJoins2.isEmpty &&
+                                          idInicial != objN.id) {
+                                        print("LLEGA AL IF 1");
                                         setState(() {
                                           xfinal = objN.x;
                                           yfinal = objN.y;
@@ -293,16 +295,27 @@ class _HomeState extends State<Home> {
                                       }
 
                                       if (listJoins.isEmpty &&
-                                          listJoins2.isNotEmpty) {
+                                              listJoins2.isNotEmpty ||
+                                          (listJoins.isEmpty &&
+                                              listJoins2.isEmpty &&
+                                              idInicial == objN.id)) {
+                                        print("LLEGA AL IF 2");
                                         setState(() {
                                           xfinal = objN.x;
                                           yfinal = objN.y;
+
+                                          bool a = false;
+                                          if(xinicial == xfinal && yinicial == yfinal){
+                                            a = true;
+                                          }
+
 
                                           if (joinModo == 2 &&
                                               xinicial != -1 &&
                                               yinicial != -1 &&
                                               xfinal != -1 &&
                                               yfinal != -1) {
+                                            print("llega aqui2");
                                             vUniones.add(ModeloArista(
                                                 idInicial,
                                                 objN.id,
@@ -311,19 +324,24 @@ class _HomeState extends State<Home> {
                                                 xfinal,
                                                 yfinal,
                                                 _textFieldController.text,
-                                                false,
+                                                a,
                                                 isDirected));
+
+                                            print("llega aqui 3");
 
                                             int posInicial = values
                                                 .indexOf(nodoInicial.mensaje);
                                             int posFinal =
                                                 values.indexOf(objN.mensaje);
+                                            print("llega aqui 4");
                                             matrixTrueFalse[posInicial]
                                                 [posFinal] = 1;
-
                                             matrixArists[posInicial][posFinal] =
                                                 int.parse(
                                                     _textFieldController.text);
+                                            print("llega aqui 5");
+
+                                            print(vUniones.toList());
 
                                             _textFieldController.text = "";
                                           }
