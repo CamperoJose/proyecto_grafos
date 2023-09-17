@@ -1,48 +1,32 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final BuildContext context;
+
+  CustomAppBar({required this.context});
+
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back), // Icono de flecha de retroceso
+        onPressed: () {
+          Navigator.of(this.context).pop(); // Utiliza el context proporcionado para la navegación
+        },
+      ),
       title: Text(
-        'GraphDesigner',
+        'Graficador de Grafos - Los Iluminati',
         style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.5,
+          fontSize: 20, // Tamaño de fuente reducido
+          fontWeight: FontWeight.w100,
+          fontFamily: 'Roboto',
         ),
       ),
-      backgroundColor: Colors.pink.shade900,
-      elevation: 8,
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 20),
-          child: PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'generateMatrix') {
-                // Agrega la funcionalidad para "Generar matriz" aquí
-              } else if (value == 'goToMenu') {
-                // Agrega la funcionalidad para "Volver al menú" aquí
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<String>(
-                  value: 'generateMatrix',
-                  child: Text('Generar matriz'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'goToMenu',
-                  child: Text('Volver al menú'),
-                ),
-              ];
-            },
-          ),
-        ),
-      ],
+      backgroundColor: Colors.lightBlue.shade900,
+      elevation: 5,
     );
   }
 }
