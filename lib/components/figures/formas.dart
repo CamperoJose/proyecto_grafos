@@ -30,33 +30,75 @@ class Union extends CustomPainter {
     print("llega union 1");
     Paint paint = Paint()
       ..style = PaintingStyle.fill
-      ..color = Colors.black
+      ..color = Colors.grey.shade600
       ..strokeWidth = 2;
 
     Paint paint2 = Paint()
       ..style = PaintingStyle.stroke
-      ..color = Colors.black
+      ..color = Colors.grey.shade600
       ..strokeWidth = 2;
     print("llega union 2");
 
     for (var nodo in vUniones) {
       if (nodo.ida == true) {
 
+        //EN CASO DE LOOP: 
         if (nodo.xinicio == nodo.xfinal && nodo.yinicio == nodo.yfinal) {
-          print("el nodo va a si mismo");
-          // Dibuja un arco al mismo nodo
-          double radius = 30.0; // Cambia el radio según tus necesidades
-          canvas.drawArc(
-            Rect.fromCircle(
-              center: Offset(nodo.xinicio, nodo.yinicio),
-              radius: radius,
-            ),
-            0,
-            pi * 2, // Dibuja un círculo completo
-            false,
-            paint,
-          );
-        } else {
+  double centerX = nodo.xinicio;
+  double centerY = nodo.yinicio;
+  double controlX1 = centerX + 100; // Ajusta la posición de los puntos de control
+  double controlY1 = centerY - 170;
+  double controlX2 = centerX - 100;
+  double controlY2 = centerY - 30;
+
+  Paint paint = Paint()
+    ..style = PaintingStyle.stroke // Establece el estilo en stroke
+    ..color = Colors.grey.shade700
+    ..strokeWidth = 2;
+
+  Path path = Path();
+  path.moveTo(centerX, centerY);
+  path.cubicTo(
+    controlX1,
+    controlY1,
+    controlX2,
+    controlY2,
+    centerX,
+    centerY,
+  );
+
+  canvas.drawPath(path, paint);
+
+  if(nodo.dirigido){
+      double angle = atan2(centerY - controlY1, centerX - controlX1);
+          double arrowX = centerX - 30 * cos(angle);
+          double arrowY = centerY - 30 * sin(angle);
+
+          Paint arrowPaint = Paint()
+    ..style = PaintingStyle.fill 
+    ..color = Colors.grey.shade600;
+
+          Path arrowPath = Path();
+          
+          arrowPath.moveTo(
+              centerX - 30 * cos(angle), centerY - 30 * sin(angle));
+          arrowPath.lineTo(arrowX + (-15) * cos(angle + pi / 6),
+              arrowY + (-15) * sin(angle + pi / 6));
+          arrowPath.lineTo(arrowX + (-15) * cos(angle - pi / 6),
+              arrowY + (-15) * sin(angle - pi / 6));
+          arrowPath.close();
+          canvas.drawPath(arrowPath, arrowPaint);
+
+          
+  }
+
+  double textX = centerX + 0; // Ajusta la posición X según tus preferencias
+  double textY = centerY - 110; // Ajusta la posición Y según tus preferencias
+
+  _msg(textX, textY, nodo.peso, canvas);
+}
+
+else {
           canvas.drawLine(Offset(nodo.xinicio, nodo.yinicio),
               Offset(nodo.xfinal, nodo.yfinal), paint);
 
