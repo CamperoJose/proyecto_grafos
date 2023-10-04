@@ -3,6 +3,7 @@ import 'package:proyecto_grafos/home.dart';
 import 'package:proyecto_grafos/home_page.dart';
 
 void main() {
+  // Esta línea elimina el banner de "DEBUG"
   runApp(MyApp());
 }
 
@@ -14,8 +15,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      //home: Home(),
       home: HomePage(),
     );
   }
+  
 }
 

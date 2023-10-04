@@ -16,3 +16,6 @@ List<String> values = [];
 List<List<int>> matrixTrueFalse = [];
 
 List<List<int>> matrixArists = [];
+
+//para jhonson:
+List<List<int>> matrizHolguras = [];
