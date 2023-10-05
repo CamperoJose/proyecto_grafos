@@ -19,3 +19,5 @@ List<List<int>> matrixArists = [];
 
 //para jhonson:
 List<List<int>> matrizHolguras = [];
+
+List<String> longestPath = [];

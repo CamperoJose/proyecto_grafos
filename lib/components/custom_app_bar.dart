@@ -118,10 +118,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 }
               }
 
-              print(matrizHolguras);
+              print(matrixArists);
+              String partida1 = "";
+              for (int i = 0; i < partidas.length; i++) {
+                if (!llegadas.contains(partidas[i])) {
+                  partida1 = partidas[i];
+                }
+              }
+
+              //buscar valor de llegadas que no esta en partidas:
+              String llegada1 = "";
+              for (int i = 0; i < llegadas.length; i++) {
+                if (!partidas.contains(llegadas[i])) {
+                  llegada1 = llegadas[i];
+                }
+              }
+
+              longestPath =
+      LongestPathAlgorithm.findLongestPath(matrixArists, values, partida1, llegada1);
+
               //redirigir:
               Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => JhonsonView()));
+                  MaterialPageRoute(builder: (context) => JhonsonView()));
             }
           },
         ),
@@ -129,60 +147,65 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  calculoJhonson() {
-    print("llegajhonson1");
-    String sumaAlgor = "";
-    List<List<String>> matrizAdyacencia = [];
-    //matrizAdyacencia = generaMatriz(matrizAdyacencia);
-    //teniendo matriz arists se crea una nueva matrixz de adyacencia pero con string:
 
-    print("llegajhonson2");
+}
 
-    //agregando values a la primera fila:
-    List<String> values2 = [
-      " ",
-    ];
-    for (int i = 0; i < values.length; i++) {
-      values2.add(values[i]);
+class LongestPathAlgorithm {
+  static List<String> findLongestPath(
+      List<List<int>> adjMatrix, List<String> nodeNames, String startNode, String endNode) {
+    int n = adjMatrix.length;
+    int startIndex = nodeNames.indexOf(startNode);
+    int endIndex = nodeNames.indexOf(endNode);
+
+    if (startIndex == -1 || endIndex == -1) {
+      // Verificar si los nodos iniciales y finales son válidos.
+      return [];
     }
 
-    matrizAdyacencia.add(values2);
+    // Inicializa la lista de distancias con valores mínimos (negativo infinito).
+    List<double> dist = List.filled(n, double.negativeInfinity);
+    List<int?> prev = List.filled(n, null);
 
-    for (int i = 0; i < matrixArists.length; i++) {
-      List<String> list = [values[i]];
-      for (int j = 0; j < matrixArists.length; j++) {
-        if (matrixArists[i][j] == 0) {
-          list.add("0");
-        } else {
-          list.add(matrixArists[i][j].toString());
+    dist[startIndex] = 0;
+
+    // Aplica el algoritmo de Bellman-Ford para encontrar las distancias más largas.
+    for (int i = 0; i < n - 1; i++) {
+      for (int u = 0; u < n; u++) {
+        for (int v = 0; v < n; v++) {
+          if (adjMatrix[u][v] > 0 && dist[u] + adjMatrix[u][v] > dist[v]) {
+            dist[v] = dist[u] + adjMatrix[u][v];
+            prev[v] = u;
+          }
         }
       }
-
-      matrizAdyacencia.add(list);
     }
 
-    print(matrizAdyacencia);
+    // Verifica si hay un ciclo de costo negativo.
+    for (int u = 0; u < n; u++) {
+      for (int v = 0; v < n; v++) {
+        if (adjMatrix[u][v] > 0 && dist[u] + adjMatrix[u][v] > dist[v]) {
+          // Hay un ciclo de costo negativo en el grafo, no podemos continuar.
+          return [];
+        }
+      }
+    }
 
-    Johnson jon = Johnson();
-    print("llegajhonson4");
-    var jonson = jon.calcJon(matrizAdyacencia);
-    print("llegajhonson5");
-    sumaAlgor = "Suma: ${jonson[1]}";
-    print("llegajhonson6");
-    List<String> aux = jonson[0];
-    print("llegajhonson7");
+    // Reconstruye el camino desde el nodo inicial al nodo final.
+    List<String> longestPath = [];
+    int? current = endIndex;
 
-    List<int> vals = jon.mays(matrizAdyacencia);
-    print("llegajhonson8");
+    while (current != null) {
+      longestPath.add(nodeNames[current]);
+      current = prev[current];
+    }
 
-    List<int> valsn = jon.mins(matrizAdyacencia, jonson[1]);
-    print("llegajhonson9");
+    longestPath = longestPath.reversed.toList();
 
-    var holgs = jon.sacaHolg(matrizAdyacencia, aux, jonson[1], vals, valsn);
-    print("llegajhonson10");
-
-    //mostrar por terminal:
-    print(jonson); // muestra valores de la ruta y la sumatoria
-    print(holgs); //valores de H en forma de matriz
+    if (longestPath[0] == startNode) {
+      return longestPath;
+    } else {
+      // No se encontró un camino válido.
+      return [];
+    }
   }
 }

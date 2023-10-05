@@ -130,7 +130,11 @@ class HolguraPainter extends CustomPainter {
       bool amarillo = false;
       String mensajeA = "h = ${matrizHolguras[pos1][pos2]}";
       if (matrizHolguras[pos1][pos2] == 0) {
-        amarillo = true;
+        int posRoute = longestPath.indexOf(inicio);
+        if(longestPath[posRoute+1] == finalN){
+          amarillo = true;
+        }
+        
       }
 
       if (nodo.ida == true) {
