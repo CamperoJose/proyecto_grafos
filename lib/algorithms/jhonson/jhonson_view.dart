@@ -4,7 +4,7 @@ import 'package:proyecto_grafos/components/figures/nodo.dart';
 import 'package:proyecto_grafos/matriz.dart';
 
 class JhonsonView extends StatefulWidget {
-  const JhonsonView({super.key});
+  JhonsonView({super.key});
   @override
   State<JhonsonView> createState() => _JhonsonViewState();
 }
@@ -15,7 +15,9 @@ class _JhonsonViewState extends State<JhonsonView> {
   bool isDirected = false;
 
   void cambioEstado(int n) {
-    setState(() {modo = n;});
+    setState(() {
+      modo = n;
+    });
   }
 
   @override
@@ -24,36 +26,34 @@ class _JhonsonViewState extends State<JhonsonView> {
       home: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.of(this.context).pop();
-        },
-      ),
-      title: Text(
-        'Algoritmo de Jhonson',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w100,
-          fontFamily: 'Roboto',
-        ),
-      ),
-      backgroundColor: Color.fromARGB(255, 85, 20, 93),
-      elevation: 5,
 
-    ),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(this.context).pop();
+            },
+          ),
+          title: Text(
+            'Algoritmo de Jhonson',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w100,
+              fontFamily: 'Roboto',
+            ),
+          ),
+          backgroundColor: Color.fromARGB(255, 85, 20, 93),
+          elevation: 5,
+        ),
         body: Stack(
           children: <Widget>[
             CustomPaint(painter: HolguraPainter(vUniones)),
             CustomPaint(painter: Nodo(vNodo)),
-
           ],
         ),
-        
-
       ),
     );
   }
-
 }
+
+
