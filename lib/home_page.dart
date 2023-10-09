@@ -38,8 +38,8 @@ class HomePage extends StatelessWidget {
                 options: CarouselOptions(
                   autoPlay: true,
                   aspectRatio:
-                      MediaQuery.of(context).size.width > 600 ? 16 / 9 : 4 / 5,
-                  viewportFraction: 0.8,
+                  MediaQuery.of(context).size.width > 600 ? 16 / 5 : 4 / 5,
+                  viewportFraction: 0.3, // Cambiar el tamaño del carrusel
                   enlargeCenterPage: true,
                 ),
                 items: graphImages.map((imageInfo) {
@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
                       return Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width > 600
-                            ? MediaQuery.of(context).size.height * 0.6
+                            ? MediaQuery.of(context).size.height * 0.4
                             : MediaQuery.of(context).size.height * 0.4,
                         margin: EdgeInsets.symmetric(horizontal: 5.0),
                         decoration: BoxDecoration(
@@ -99,19 +99,38 @@ class HomePage extends StatelessWidget {
                 }).toList(),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Home()));
-                },
-                child: Text('Ir al Graficador de grafos'),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.purple.shade600,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Home()));
+                    },
+                    child: Text('Ir al Graficador de Grafos'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple.shade600,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(width: 20), // Agregar espacio entre botones
+                  ElevatedButton(
+                    onPressed: () {
+                      // Agregar la acción para el botón "Johnson" aquí
+                    },
+                    child: Text('Johnson'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple.shade600,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               Container(
@@ -141,7 +160,7 @@ class HomePage extends StatelessWidget {
                     SizedBox(height: 20),
                     // Updated text content and styling
                     Text(
-                      '🔮🔗 La matriz de adyacencia es tu clave para decodificar estas conexiones. Con "1s" y "0s", revela qué nodos están unidos y cuáles están separados. ¡Desentraña el patrón y descubre la estructura oculta! 🕵️‍♀️🌌',
+                      '🔮🔗 La matriz de adyacencia es tu clave para decodificar estas conexiones. Con "1s" y "0s", revela qué nodos están unidos y cuáles están separados. ¡Desentraña el patrón y descubre la estructura oculta! 🕵‍♀🌌',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -186,7 +205,7 @@ class HomePage extends StatelessWidget {
                             SizedBox(height: 20),
                             // Improved developer names presentation
                             Text(
-                              '@Campero__jose\n@MoronDiego\n@IsmaelRiver\n@Ruddy',
+                              '@Campero__jose\n@MoronDiego\n@Ismaelolazo\n@Ruddy',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -219,7 +238,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
+      ),
+    );
+  }
 }
