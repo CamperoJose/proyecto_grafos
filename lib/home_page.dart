@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:proyecto_grafos/algorithms/jhonson/home_jhonson.dart';
 import 'package:proyecto_grafos/home.dart';
 import 'algorithms/asignación/home_asignacion.dart';
 
@@ -121,7 +122,8 @@ class HomePage extends StatelessWidget {
                   SizedBox(width: 20), // Agregar espacio entre botones
                   ElevatedButton(
                     onPressed: () {
-                      // Agregar la acción para el botón "Johnson" aquí
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomeJhonson()));
                     },
                     child: Text('Johnson'),
                     style: ElevatedButton.styleFrom(
