@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:proyecto_grafos/home.dart';
+import 'algorithms/asignación/home_asignacion.dart';
 
 class HomePage extends StatelessWidget {
   final List<Map<String, String>> graphImages = [
@@ -38,7 +39,7 @@ class HomePage extends StatelessWidget {
                 options: CarouselOptions(
                   autoPlay: true,
                   aspectRatio:
-                  MediaQuery.of(context).size.width > 600 ? 16 / 5 : 4 / 5,
+                      MediaQuery.of(context).size.width > 600 ? 16 / 5 : 4 / 5,
                   viewportFraction: 0.3, // Cambiar el tamaño del carrusel
                   enlargeCenterPage: true,
                 ),
@@ -110,7 +111,8 @@ class HomePage extends StatelessWidget {
                     child: Text('Ir al Graficador de Grafos'),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.purple.shade600,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -124,7 +126,26 @@ class HomePage extends StatelessWidget {
                     child: Text('Johnson'),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.purple.shade600,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20), // Agregar espacio entre botones
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeAsignacion()));
+                    },
+                    child: Text('Asignación'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple.shade600,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -238,7 +259,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-     ),
-    );
-  }
+      ),
+    );
+  }
 }
