@@ -52,7 +52,7 @@ class MyBottomAppBar extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
+     ),
+    );
+  }
 }
