@@ -109,6 +109,7 @@ class _HomeState extends State<Home> {
                                           matrixArists.add(list);
                                         }
                                       });
+                                      _msgNodo.clear();
                                       Navigator.of(context).pop();
                                     }
                                   },
