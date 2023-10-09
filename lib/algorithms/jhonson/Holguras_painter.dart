@@ -97,6 +97,50 @@ class HolguraPainter extends CustomPainter {
         canvas, Offset(x + padding, y + padding)); // Aplicar relleno al texto
   }
 
+    _msg3(double x, double y, String msg, Canvas canvas) {
+    final TextSpan span = TextSpan(
+      style: TextStyle(
+        color: Colors.deepPurpleAccent,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+      text: msg,
+    );
+
+    final TextPainter tp = TextPainter(
+      text: span,
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+    );
+
+    tp.layout();
+
+    final double textWidth = tp.width;
+    final double textHeight = tp.height;
+    final double padding = 10.0; // Espacio de relleno alrededor del texto
+
+    final Rect rect = Rect.fromPoints(
+      Offset(x, y),
+      Offset(x + textWidth + 2 * padding, y + textHeight + 2 * padding),
+    );
+
+    final Paint paint = Paint()
+      ..color =
+          Color.fromARGB(255, 236, 191, 29) // Color de fondo celeste claro
+      ..style = PaintingStyle.fill;
+
+    final double borderRadius = (textHeight + 2 * padding) /
+        2.0; // Bordes redondeados basados en la altura del texto
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, Radius.circular(borderRadius)),
+      paint,
+    );
+
+    tp.paint(
+        canvas, Offset(x + padding, y + padding)); // Aplicar relleno al texto
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
@@ -217,6 +261,7 @@ class HolguraPainter extends CustomPainter {
             String mensajeA = "h = ${matrizHolguras[pos1][pos2]}";
 
             _msg2(textX - 15, textY - 45, mensajeA, canvas);
+            _msg3(100, 100, longestPathStr(longestPath), canvas);
           }
         } else {
           canvas.drawLine(Offset(nodo.xinicio, nodo.yinicio),
@@ -251,6 +296,8 @@ class HolguraPainter extends CustomPainter {
           if (inicio != "" && finalN != "") {
             _msg2((nodo.xfinal + nodo.xinicio) / 2 - 15,
                 (nodo.yinicio + nodo.yfinal) / 2 - 45, mensajeA, canvas);
+
+            _msg3(70, 100, "Ruta Crítica: ${longestPathStr(longestPath)}" , canvas);
           }
         }
       } else {
@@ -318,6 +365,8 @@ class HolguraPainter extends CustomPainter {
 
           _msg2(arrowPoint.dx - 30 * cos(angle) - 15,
               arrowPoint.dy - 30 * sin(angle2) - 20 - 45, mensajeA, canvas);
+
+          _msg3(100, 100, longestPathStr(longestPath), canvas);
         }
       }
     }
@@ -327,4 +376,17 @@ class HolguraPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+}
+
+
+String longestPathStr(List<String> values) {
+  String longest = '';
+  //mostrar valores de values en variable longest en forma a -> b -> c:
+  for (int i = 0; i < values.length; i++) {
+    longest += values[i];
+    if (i != values.length - 1) {
+      longest += ' -> ';
+    }
+  }
+  return longest;
 }
