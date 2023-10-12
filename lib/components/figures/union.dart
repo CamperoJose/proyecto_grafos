@@ -54,7 +54,6 @@ _msg(double x, double y, String msg, Canvas canvas) {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print("llega union 1");
     Paint paint = Paint()
       ..style = PaintingStyle.fill
       ..color = Colors.grey.shade600
@@ -64,7 +63,6 @@ _msg(double x, double y, String msg, Canvas canvas) {
       ..style = PaintingStyle.stroke
       ..color = Colors.grey.shade600
       ..strokeWidth = 2;
-    print("llega union 2");
 
     for (var nodo in vUniones) {
       if (nodo.ida == true) {

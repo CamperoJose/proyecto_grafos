@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:proyecto_grafos/algorithms/asignaci%C3%B3n/algoritmo_asignacion.dart';
 import 'package:proyecto_grafos/algorithms/asignaci%C3%B3n/algoritmo_asignacion_min.dart';
 import 'package:proyecto_grafos/matriz.dart';
+import 'package:http/http.dart' as http;
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final BuildContext context;
@@ -50,253 +53,265 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               );
             }).toList();
           },
-          onSelected: (String choice) {
+          onSelected: (String choice) async {
             if (choice == 'Maximizar') {
-              List<dynamic> ans = calcularAsignacionOptima2();
-              List<List<bool>> calculos = [];
-              for (int i = 0; i < matrixArists.length; i++) {
-                List<bool> fila = [];
-                for (int j = 0; j < matrixArists[i].length; j++) {
-                  fila.add(false);
+              print(matrixArists);
+              print(values);
+
+              List<String> origenes = [];
+              List<String> llegadas = [];
+
+              for (int i = 0; i < matrixArists[0].length; i++) {
+                if (i < matrixArists[0].length / 2) {
+                  origenes.add(values[i]);
+                } else {
+                  llegadas.add(values[i]);
                 }
-                calculos.add(fila);
-              }
-              //recorriendo la lista ans:
-              for (int i = 0; i < ans[1].length; i++) {
-                //recorriendo la lista ans:
-                String origen = ans[1][i][0];
-                String llegada = ans[1][i][1];
-                int pos1 = values.indexOf(origen);
-                int pos2 = values.indexOf(llegada);
-                calculos[pos1][pos2] = true;
               }
 
-              //calcular sumatoria:
-              int sumatoria = 0;
-              for (int i = 0; i < matrixArists.length; i++) {
-                for (int j = 0; j < matrixArists[i].length; j++) {
-                  if (calculos[i][j] == true) {
-                    sumatoria += matrixArists[i][j];
+              print("orgienes: $origenes");
+              print("llegadas: $llegadas");
+
+              List<List<String>> asignaciones = [];
+
+              void generarAsignaciones(List<String> asignacionParcial) {
+                if (asignacionParcial.length == origenes.length) {
+                  asignaciones.add(List.from(asignacionParcial));
+                  return;
+                }
+
+                for (int i = 0; i < llegadas.length; i++) {
+                  if (!asignacionParcial.contains(llegadas[i])) {
+                    asignacionParcial.add(llegadas[i]);
+                    generarAsignaciones(asignacionParcial);
+                    asignacionParcial.removeLast();
                   }
                 }
               }
 
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Resultado de Asignación para MAXIMIZAR'),
-                    content: Container(
-                      width: double.minPositive,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Asignaciones:',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 10),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: calculos.length,
-                              itemBuilder: (context, i) {
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: calculos[i].length,
-                                  itemBuilder: (context, j) {
-                                    if (calculos[i][j]) {
-                                      return Card(
-                                        elevation: 3,
-                                        color: const Color.fromARGB(
-                                            255, 239, 252, 239),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Ruta: ${values[i]} - > ${values[j]}',
-                                                style: const TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 33, 97, 35),
-                                                  fontSize: 16,
-                                                ),
-                                              ),
+              generarAsignaciones([]);
+              print(asignaciones); //matriz de llegadas
 
-                                              Text(
-                                                'Costo: ${matrixArists[i][j]}',
-                                                style: const TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 33, 97, 35),
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox();
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  'Sumatoria: $sumatoria',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+              int suma = -1;
+              int opcion_maxima = -1;
+
+              for (int i = 0; i < asignaciones.length; i++) {
+                int suma_parcial = 0;
+                for (int j = 0; j < asignaciones[i].length; j++) {
+                  int pos1 = values.indexOf(origenes[j]);
+                  int pos2 = values.indexOf(asignaciones[i][j]);
+                  print("pos1: $pos1");
+                  print("pos1: $pos2");
+                  suma_parcial = suma_parcial + matrixArists[pos1][pos2];
+                  print("suma_p: $suma_parcial");
+                }
+                if (suma_parcial > suma) {
+                  suma = suma_parcial;
+                  opcion_maxima = i;
+                }
+              }
+
+              print("suma: $suma");
+              print("opcion minima: ${asignaciones[opcion_maxima]}");
+
+              //mostrando resultado en un pop up:
+              showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Asignación Óptima Maxima',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green
+                  ),
+                ),
+                SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: origenes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text('Origen: ${origenes[index]}'),
+                      subtitle: Text('Destino: ${asignaciones[opcion_maxima][index]}'),
+                    );
+                  },
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Sumatoria máxima: $suma',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Center(
+                  child: TextButton(
+                    child: Text(
+                      'Cerrar',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
                       ),
                     ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Cerrar'),
-                      ),
-                    ],
-                  );
-                },
-              );
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  },
+);
+
 
             }
+
             if (choice == 'Minimizar') {
-              List<dynamic> ans = calcularAsignacionOptima();
-              List<List<bool>> calculos = [];
-              for (int i = 0; i < matrixArists.length; i++) {
-                List<bool> fila = [];
-                for (int j = 0; j < matrixArists[i].length; j++) {
-                  fila.add(false);
+              print(matrixArists);
+              print(values);
+
+              List<String> origenes = [];
+              List<String> llegadas = [];
+
+              for (int i = 0; i < matrixArists[0].length; i++) {
+                if (i < matrixArists[0].length / 2) {
+                  origenes.add(values[i]);
+                } else {
+                  llegadas.add(values[i]);
                 }
-                calculos.add(fila);
-              }
-              //recorriendo la lista ans:
-              for (int i = 0; i < ans[1].length; i++) {
-                //recorriendo la lista ans:
-                String origen = ans[1][i][0];
-                String llegada = ans[1][i][1];
-                int pos1 = values.indexOf(origen);
-                int pos2 = values.indexOf(llegada);
-                calculos[pos1][pos2] = true;
               }
 
-              //calcular sumatoria:
-              int sumatoria = 0;
-              for (int i = 0; i < matrixArists.length; i++) {
-                for (int j = 0; j < matrixArists[i].length; j++) {
-                  if (calculos[i][j] == true) {
-                    sumatoria += matrixArists[i][j];
+              print("orgienes: $origenes");
+              print("llegadas: $llegadas");
+
+              List<List<String>> asignaciones = [];
+
+              void generarAsignaciones(List<String> asignacionParcial) {
+                if (asignacionParcial.length == origenes.length) {
+                  asignaciones.add(List.from(asignacionParcial));
+                  return;
+                }
+
+                for (int i = 0; i < llegadas.length; i++) {
+                  if (!asignacionParcial.contains(llegadas[i])) {
+                    asignacionParcial.add(llegadas[i]);
+                    generarAsignaciones(asignacionParcial);
+                    asignacionParcial.removeLast();
                   }
                 }
               }
 
+              generarAsignaciones([]);
+              print(asignaciones); //matriz de llegadas
+
+              int suma = 99999999;
+              int opcion_minima = -1;
+
+              for (int i = 0; i < asignaciones.length; i++) {
+                int suma_parcial = 0;
+                for (int j = 0; j < asignaciones[i].length; j++) {
+                  int pos1 = values.indexOf(origenes[j]);
+                  int pos2 = values.indexOf(asignaciones[i][j]);
+                  print("pos1: $pos1");
+                  print("pos1: $pos2");
+                  suma_parcial = suma_parcial + matrixArists[pos1][pos2];
+                  print("suma_p: $suma_parcial");
+                }
+                if (suma_parcial < suma) {
+                  suma = suma_parcial;
+                  opcion_minima = i;
+                }
+              }
+
+              print("suma: $suma");
+              print("opcion minima: ${asignaciones[opcion_minima]}");
+
+              //mostrando resultado en un pop up:
               showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Resultado de Asignación para MINIMIZAR'),
-                    content: Container(
-                      width: double.minPositive,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Asignaciones:',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 10),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: calculos.length,
-                              itemBuilder: (context, i) {
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: calculos[i].length,
-                                  itemBuilder: (context, j) {
-                                    if (calculos[i][j]) {
-                                      return Card(
-                                        elevation: 3,
-                                        color: Color.fromARGB(255, 239, 239, 252),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Ruta: ${values[i]} - > ${values[j]}',
-                                                style: const TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 33, 97, 35),
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Costo: ${matrixArists[i][j]}',
-                                                style: const TextStyle(
-                                                    color: Color.fromARGB(255, 33, 63, 97),
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox();
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  'Sumatoria: $sumatoria',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+  context: context,
+  builder: (BuildContext context) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              
+              children: [
+                Text(
+                  'Asignación Óptima',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green
+                  ),
+                ),
+                SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: origenes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text('Origen: ${origenes[index]}'),
+                      subtitle: Text('Destino: ${asignaciones[opcion_minima][index]}'),
+                    );
+                  },
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Sumatoria mínima: $suma',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Center(
+                  child: TextButton(
+                    child: Text(
+                      'Cerrar',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
                       ),
                     ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Cerrar'),
-                      ),
-                    ],
-                  );
-                },
-              );
-              
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  },
+);
+
+
             }
           },
         ),
@@ -450,36 +465,3 @@ int encontrarSuboptimo2(List<List<int>> matrix, int destino, int origenOptimo) {
 }
 
 //import 'dart:math';
-
-List<int> hungarianAlgorithm(List<List<int>> matrix) {
-  print(matrix);
-  List<int> result = [];
-  for (int i = 0; i < matrix.length; i++) {
-    if (todoCero(matrix[i])) {
-      result.add(-1);
-    } else {
-      result.add(posMenor(matrix[i]));
-    }
-  }
-
-  return result;
-}
-
-bool todoCero(List<int> fila) {
-  for (int i = 0; i < fila.length; i++) {
-    if (fila[i] != 0) {
-      return false;
-    }
-  }
-  return true;
-}
-
-int posMenor(List<int> fila) {
-  int m = 100000000000000;
-  for (int i = 0; i < fila.length; i++) {
-    if (fila[i] < m && fila[i] != 0) {
-      m = fila[i];
-    }
-  }
-  return fila.indexOf(m);
-}
