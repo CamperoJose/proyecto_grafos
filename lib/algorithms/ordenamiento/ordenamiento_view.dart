@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/insert_sort.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/simulation_insertion_view.dart';
 import 'bubble_sort.dart';
-import 'simulation_view.dart';
+import 'simulation_bubble_view.dart';
 
 class OrdenamientoView extends StatefulWidget {
   @override
@@ -40,18 +42,34 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
     });
   }
 
-  Widget buildGridButton(IconData icon, String label, VoidCallback onPressed) {
+    void sortNumbersWithInsertionSort() {
+    final List<int> numbers = List.from(randomNumbers);
+    final DateTime startTime = DateTime.now();
+    final List<int> sortedNumbers = insertionSort(numbers);
+    final DateTime endTime = DateTime.now();
+    final Duration duration = endTime.difference(startTime);
+
+    setState(() {
+      randomNumbers = numbers;
+      sortedRandomNumbers = sortedNumbers;
+      sortingTime = duration;
+    });
+  }
+
+  Widget buildGridButton(Color color, IconData icon, String label, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        primary: Colors.deepPurple,
+        primary: color,
+                
       ),
       child: Column(
+
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 40),
           SizedBox(height: 5),
-          Text(label, textAlign: TextAlign.center),
+          Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100), ),
         ],
       ),
     );
@@ -77,8 +95,8 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Ingrese la cantidad de números a generar:'),
-                SizedBox(height: 10),
+                const Text('Ingrese la cantidad de números a generar:', style: TextStyle(fontWeight: FontWeight.bold),),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,7 +107,7 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                         keyboardType: TextInputType.number,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         final int count = int.tryParse(_numberController.text) ?? 0;
@@ -103,22 +121,23 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                   ],
                 ),
                 if (randomNumbers.isNotEmpty) ...[
-                  SizedBox(height: 20),
-                  Text('Números generados:'),
+                  const SizedBox(height: 20),
+                  const Text('Números generados:'),
                   Text(randomNumbers.join(", ")),
                 ],
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GridView.count(
-                  crossAxisCount: 3,
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 20,
                   shrinkWrap: true,
                   children: [
-                    buildGridButton(Icons.sort, 'Bubble Sort', () {
+                    buildGridButton(Colors.orange ,Icons.sort, 'Bubble Sort', () {
                       sortNumbersWithBubbleSort();
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('Números ordenados (Bubble Sort)'),
+                            title: const Text('Números ordenados (Bubble Sort)'),
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
@@ -157,7 +176,145 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                         },
                       );
                     }),
-                    // Puedes agregar botones para otros algoritmos aquí en el futuro
+
+
+                    buildGridButton(const Color.fromARGB(255, 41, 119, 157), Icons.sort, 'Insertion Sort', () {
+                      sortNumbersWithInsertionSort();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Números ordenados (Insertion Sort)'),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(sortedRandomNumbers.join(", ")),
+                                SizedBox(height: 10),
+                                Text('Tiempo de ordenamiento: ${sortingTime.inMicroseconds} ms'),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Cerrar', style: TextStyle(color: const Color.fromARGB(255, 163, 45, 37), fontWeight: FontWeight.bold)),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SimulationViewInsertion(
+                                        originalNumbers: randomNumbers,
+                                        sortedNumbers: sortedRandomNumbers,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text('Ver Simulación'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color.fromARGB(255, 52, 145, 55),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }),
+
+                    buildGridButton(Color.fromARGB(255, 214, 49, 156), Icons.sort, 'Merge Sort', () {
+                      sortNumbersWithInsertionSort();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Números ordenados (Insertion Sort)'),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(sortedRandomNumbers.join(", ")),
+                                SizedBox(height: 10),
+                                Text('Tiempo de ordenamiento: ${sortingTime.inMilliseconds} ms'),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Cerrar', style: TextStyle(color: const Color.fromARGB(255, 163, 45, 37), fontWeight: FontWeight.bold)),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SimulationView(
+                                        originalNumbers: randomNumbers,
+                                        sortedNumbers: sortedRandomNumbers,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text('Ver Simulación'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color.fromARGB(255, 52, 145, 55),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }),
+
+                    buildGridButton(Color.fromARGB(255, 80, 157, 41), Icons.sort, 'Quick Sort', () {
+                      sortNumbersWithInsertionSort();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Números ordenados (Insertion Sort)'),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(sortedRandomNumbers.join(", ")),
+                                SizedBox(height: 10),
+                                Text('Tiempo de ordenamiento: ${sortingTime.inMilliseconds} ms'),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Cerrar', style: TextStyle(color: const Color.fromARGB(255, 163, 45, 37), fontWeight: FontWeight.bold)),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SimulationView(
+                                        originalNumbers: randomNumbers,
+                                        sortedNumbers: sortedRandomNumbers,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text('Ver Simulación'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color.fromARGB(255, 52, 145, 55),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }),
                   ],
                 ),
               ],
