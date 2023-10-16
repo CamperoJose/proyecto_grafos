@@ -160,6 +160,24 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              builder: (context) => HomeNorth()));
+                    },
+                    child: Text('NorthWest'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple.shade600,
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  )
+                  SizedBox(width: 20), // Agregar espacio entre botones
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
                               builder: (context) => OrdenamientoView()));
                     },
                     child: Text('Algoritmos de Ordenamiento'),
