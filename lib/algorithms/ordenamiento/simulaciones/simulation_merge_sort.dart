@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class SimulationView extends StatefulWidget {
+class SimulationViewMerge extends StatefulWidget {
   final List<int> originalNumbers;
   final List<int> sortedNumbers;
 
-  SimulationView({required this.originalNumbers, required this.sortedNumbers});
+  SimulationViewMerge({required this.originalNumbers, required this.sortedNumbers});
 
   @override
-  _SimulationViewState createState() => _SimulationViewState();
+  _SimulationViewMergeState createState() => _SimulationViewMergeState();
 }
 
-class _SimulationViewState extends State<SimulationView> {
+class _SimulationViewMergeState extends State<SimulationViewMerge> {
   List<int> numbers = [];
   int currentStep = 0;
   bool isSorting = false;
@@ -21,24 +21,68 @@ class _SimulationViewState extends State<SimulationView> {
     numbers = List.from(widget.originalNumbers);
   }
 
-  void startSorting() async {
-    if (!isSorting) {
-      isSorting = true;
-      for (int i = 0; i < numbers.length; i++) {
-        for (int j = 0; j < numbers.length - i - 1; j++) {
-          if (numbers[j] > numbers[j + 1]) {
-            setState(() {
-              final temp = numbers[j];
-              numbers[j] = numbers[j + 1];
-              numbers[j + 1] = temp;
-            });
-            await Future.delayed(const Duration(milliseconds: 500));
-          }
-        }
-      }
-      isSorting = false;
-    }
+void startSorting() async {
+  if (!isSorting) {
+    isSorting = true;
+    await mergeSortAnimated(0, numbers.length - 1);
+    isSorting = false;
   }
+}
+
+Future<void> mergeSortAnimated(int left, int right) async {
+  if (left < right) {
+    final int middle = (left + right) ~/ 2;
+    await mergeSortAnimated(left, middle);
+    await mergeSortAnimated(middle + 1, right);
+    await mergeAnimated(left, middle, right);
+  }
+}
+
+Future<void> mergeAnimated(int left, int middle, int right) async {
+  final List<int> leftList = numbers.sublist(left, middle + 1);
+  final List<int> rightList = numbers.sublist(middle + 1, right + 1);
+
+  int leftIndex = 0, rightIndex = 0, mergedIndex = left;
+
+  while (leftIndex < leftList.length && rightIndex < rightList.length) {
+    if (leftList[leftIndex] <= rightList[rightIndex]) {
+      numbers[mergedIndex] = leftList[leftIndex];
+      leftIndex++;
+    } else {
+      numbers[mergedIndex] = rightList[rightIndex];
+      rightIndex++;
+    }
+    mergedIndex++;
+
+    // Pausa para animar
+    setState(() {});
+
+    await Future.delayed( Duration(milliseconds: numbers.length>250 ? 10 : 500));
+  }
+
+  while (leftIndex < leftList.length) {
+    numbers[mergedIndex] = leftList[leftIndex];
+    leftIndex++;
+    mergedIndex++;
+
+    // Pausa para animar
+    setState(() {});
+
+    await Future.delayed( Duration(milliseconds: numbers.length>250 ? 10 : 500));
+  }
+
+  while (rightIndex < rightList.length) {
+    numbers[mergedIndex] = rightList[rightIndex];
+    rightIndex++;
+    mergedIndex++;
+
+    // Pausa para animar
+    setState(() {});
+
+    await Future.delayed( Duration(milliseconds: numbers.length>250 ? 10 : 500));
+  }
+}
+
 
   void resetSimulation() {
     if (!isSorting) {
@@ -62,7 +106,7 @@ class _SimulationViewState extends State<SimulationView> {
             },
           ),
           //color:
-          backgroundColor: Colors.deepPurple.shade900,
+          backgroundColor: Color.fromARGB(255, 214, 49, 156),
         ),
         body: Container(
 
@@ -72,7 +116,7 @@ class _SimulationViewState extends State<SimulationView> {
               children: [
                 SizedBox(height: 20),
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 500),
+                  duration: Duration(milliseconds: numbers.length>250 ? 10 : 500),
                   height: isSorting ? 200 : 0,
                   width: 600,
                   child: CustomPaint(
@@ -136,7 +180,7 @@ class HistogramPainter extends CustomPainter {
       final y = size.height - barHeight;
 
       final paint = Paint()
-        ..color = Colors.deepPurple.shade900
+        ..color = Color.fromARGB(255, 214, 49, 156)
         ..style = PaintingStyle.fill;
 
       canvas.drawRect(

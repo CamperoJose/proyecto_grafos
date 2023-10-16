@@ -1,9 +1,13 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:proyecto_grafos/algorithms/ordenamiento/insert_sort.dart';
-import 'package:proyecto_grafos/algorithms/ordenamiento/simulation_insertion_view.dart';
-import 'bubble_sort.dart';
-import 'simulation_bubble_view.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/algoritmos/insert_sort.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/algoritmos/merge_sort.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/algoritmos/shell_sort.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/simulaciones/simulation_insertion_view.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/simulaciones/simulation_merge_sort.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/simulaciones/simulation_shell_view.dart';
+import 'algoritmos/bubble_sort.dart';
+import 'simulaciones/simulation_bubble_view.dart';
 
 class OrdenamientoView extends StatefulWidget {
   @override
@@ -46,6 +50,34 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
     final List<int> numbers = List.from(randomNumbers);
     final DateTime startTime = DateTime.now();
     final List<int> sortedNumbers = insertionSort(numbers);
+    final DateTime endTime = DateTime.now();
+    final Duration duration = endTime.difference(startTime);
+
+    setState(() {
+      randomNumbers = numbers;
+      sortedRandomNumbers = sortedNumbers;
+      sortingTime = duration;
+    });
+  }
+
+    void sortNumbersWithMergeSort() {
+    final List<int> numbers = List.from(randomNumbers);
+    final DateTime startTime = DateTime.now();
+    final List<int> sortedNumbers = mergeSort(numbers);
+    final DateTime endTime = DateTime.now();
+    final Duration duration = endTime.difference(startTime);
+
+    setState(() {
+      randomNumbers = numbers;
+      sortedRandomNumbers = sortedNumbers;
+      sortingTime = duration;
+    });
+  }
+
+      void sortNumbersWithShellSort() {
+    final List<int> numbers = List.from(randomNumbers);
+    final DateTime startTime = DateTime.now();
+    final List<int> sortedNumbers = shellSort(numbers);
     final DateTime endTime = DateTime.now();
     final Duration duration = endTime.difference(startTime);
 
@@ -144,7 +176,7 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                               children: [
                                 Text(sortedRandomNumbers.join(", ")),
                                 SizedBox(height: 10),
-                                Text('Tiempo de ordenamiento: ${sortingTime.inMilliseconds} ms'),
+                                Text('Tiempo de ordenamiento: ${sortingTime} ms'),
                               ],
                             ),
                             actions: <Widget>[
@@ -191,7 +223,7 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                               children: [
                                 Text(sortedRandomNumbers.join(", ")),
                                 SizedBox(height: 10),
-                                Text('Tiempo de ordenamiento: ${sortingTime.inMicroseconds} ms'),
+                                Text('Tiempo de ordenamiento: ${sortingTime} ms'),
                               ],
                             ),
                             actions: <Widget>[
@@ -230,14 +262,14 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Números ordenados (Insertion Sort)'),
+                            title: const Text('Números ordenados (Merge Sort)'),
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(sortedRandomNumbers.join(", ")),
                                 SizedBox(height: 10),
-                                Text('Tiempo de ordenamiento: ${sortingTime.inMilliseconds} ms'),
+                                Text('Tiempo de ordenamiento: ${sortingTime} '),
                               ],
                             ),
                             actions: <Widget>[
@@ -252,7 +284,7 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SimulationView(
+                                      builder: (context) => SimulationViewMerge(
                                         originalNumbers: randomNumbers,
                                         sortedNumbers: sortedRandomNumbers,
                                       ),
@@ -270,20 +302,20 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                       );
                     }),
 
-                    buildGridButton(Color.fromARGB(255, 80, 157, 41), Icons.sort, 'Quick Sort', () {
-                      sortNumbersWithInsertionSort();
+                    buildGridButton(Color.fromARGB(255, 65, 136, 30), Icons.sort, 'Shell Sort', () {
+                      sortNumbersWithShellSort();
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Números ordenados (Insertion Sort)'),
+                            title: const Text('Números ordenados (Shell Sort)'),
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(sortedRandomNumbers.join(", ")),
                                 SizedBox(height: 10),
-                                Text('Tiempo de ordenamiento: ${sortingTime.inMilliseconds} ms'),
+                                Text('Tiempo de ordenamiento: ${sortingTime} ms'),
                               ],
                             ),
                             actions: <Widget>[
@@ -298,7 +330,7 @@ class _OrdenamientoViewState extends State<OrdenamientoView> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SimulationView(
+                                      builder: (context) => SimulationViewShell(
                                         originalNumbers: randomNumbers,
                                         sortedNumbers: sortedRandomNumbers,
                                       ),

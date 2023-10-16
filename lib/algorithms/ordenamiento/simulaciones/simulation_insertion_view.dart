@@ -21,24 +21,31 @@ class _SimulationViewInsertionState extends State<SimulationViewInsertion> {
     numbers = List.from(widget.originalNumbers);
   }
 
-  void startSorting() async {
-    if (!isSorting) {
-      isSorting = true;
-      for (int i = 0; i < numbers.length; i++) {
-        for (int j = 0; j < numbers.length - i - 1; j++) {
-          if (numbers[j] > numbers[j + 1]) {
-            setState(() {
-              final temp = numbers[j];
-              numbers[j] = numbers[j + 1];
-              numbers[j + 1] = temp;
-            });
-            await Future.delayed(const Duration(milliseconds: 500));
-          }
-        }
+void startSorting() async {
+  if (!isSorting) {
+    isSorting = true;
+
+    for (int i = 1; i < numbers.length; i++) {
+      int key = numbers[i];
+      int j = i - 1;
+
+      while (j >= 0 && numbers[j] > key) {
+        setState(() {
+          numbers[j + 1] = numbers[j];
+        });
+        j--;
+        await Future.delayed( Duration(milliseconds: numbers.length>250 ? 20 : 500));
       }
-      isSorting = false;
+
+      setState(() {
+        numbers[j + 1] = key;
+      });
     }
+
+    isSorting = false;
   }
+}
+
 
   void resetSimulation() {
     if (!isSorting) {
@@ -72,9 +79,9 @@ class _SimulationViewInsertionState extends State<SimulationViewInsertion> {
               children: [
                 SizedBox(height: 20),
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 500),
+                  duration: Duration(milliseconds: numbers.length>250 ? 20 : 500),
                   height: isSorting ? 200 : 0,
-                  width: 600,
+                  width: 800,
                   child: CustomPaint(
                     size: Size(400, 200),
                     painter: HistogramPainter(numbers),
