@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:proyecto_grafos/algorithms/jhonson/home_jhonson.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_view.dart';
 import 'package:proyecto_grafos/home.dart';
 import 'algorithms/asignación/home_asignacion.dart';
 
@@ -144,6 +145,24 @@ class HomePage extends StatelessWidget {
                               builder: (context) => HomeAsignacion()));
                     },
                     child: Text('Asignación'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple.shade600,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20), // Agregar espacio entre botones
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrdenamientoView()));
+                    },
+                    child: Text('Algoritmos de Ordenamiento'),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.purple.shade600,
                       padding:
