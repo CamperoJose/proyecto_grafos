@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:proyecto_grafos/algorithms/jhonson/home_jhonson.dart';
+import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_manual_view.dart';
 import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_view.dart';
 import 'package:proyecto_grafos/home.dart';
 import 'algorithms/asignación/home_asignacion.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
   final List<Map<String, String>> graphImages = [
     {
       'imagePath': 'assets/img01.jpeg',
@@ -123,8 +145,10 @@ class HomePage extends StatelessWidget {
                   SizedBox(width: 20), // Agregar espacio entre botones
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomeJhonson()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeJhonson()));
                     },
                     child: Text('Johnson'),
                     style: ElevatedButton.styleFrom(
@@ -157,10 +181,185 @@ class HomePage extends StatelessWidget {
                   SizedBox(width: 20), // Agregar espacio entre botones
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrdenamientoView()));
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.black, // Fondo negro
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10), // Espaciado interno
+                            title: Text(
+                              'Algoritmos de Ordenamiento',
+                              style: TextStyle(
+                                color: Colors.white, // Título en blanco
+                                fontSize: 20, // Tamaño de fuente
+                              ),
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize
+                                  .min, // Ajusta el tamaño del contenido
+                              children: [
+                                Text(
+                                  'Seleccione una opción para ver el algoritmo de ordenamiento',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white, // Texto en blanco
+                                  ),
+                                ),
+                                SizedBox(height: 20), // Espacio vertical
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrdenamientoView(),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors
+                                            .green), // Cambia el color del botón
+                                  ),
+                                  child: Text(
+                                    'Números Aleatorios',
+                                    style: TextStyle(
+                                      color: Colors.white, // Texto en blanco
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10), // Espacio adicional
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrdenamientoView(),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors
+                                            .blue), // Cambia el color del botón
+                                  ),
+                                  child: Text(
+                                    'Ingresar Números Manualmente',
+                                    style: TextStyle(
+                                      color: Colors.white, // Texto en blanco
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.black, // Fondo negro
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.white, width: 1), // Borde blanco delgado
+        borderRadius: BorderRadius.circular(10), // Bordes redondeados
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      title: Text(
+        'Algoritmos de Ordenamiento',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Seleccione una opción para ver el algoritmo de ordenamiento',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrdenamientoView(),
+                ),
+              );
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.teal), // Cambia el color del botón
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Bordes redondeados
+                ),
+              ),
+              elevation: MaterialStateProperty.all(4), // Elevación del botón
+            ),
+            child: AnimatedBuilder(
+              animation: _animationController, // Animación de crecimiento y reducción
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: 1 + _animationController.value * 0.05, // Escala con animación
+                  child: child,
+                );
+              },
+              child: Text(
+                'Números Aleatorios',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrdenamientoManualView(),
+                ),
+              );
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.indigo), // Cambia el color del botón
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Bordes redondeados
+                ),
+              ),
+              elevation: MaterialStateProperty.all(4), // Elevación del botón
+            ),
+            child: AnimatedBuilder(
+              animation: _animationController, // Animación de crecimiento y reducción
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: 1 + _animationController.value * 0.05, // Escala con animación
+                  child: child,
+                );
+              },
+              child: Text(
+                'Ingresar Números Manualmente',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  },
+);
+
                     },
                     child: Text('Algoritmos de Ordenamiento'),
                     style: ElevatedButton.styleFrom(
@@ -280,7 +479,9 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-     ),
+      ),
     );
   }
+  
+
 }
