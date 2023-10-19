@@ -2,10 +2,7 @@ class ModeloNodoN {
   String _id;//nombre
   double _x, _y, _radio;
   String _mensaje;
-  int _oferta; // Campo de oferta
-  int _demanda; // Campo de demanda
-
-  ModeloNodoN(this._id, this._x, this._y, this._radio, this._mensaje, this._oferta, this._demanda);
+  ModeloNodoN(this._id, this._x, this._y, this._radio, this._mensaje);
 
   String get mensaje => _mensaje;
 
@@ -15,17 +12,7 @@ class ModeloNodoN {
     _mensaje = value;
   }
 
-  int get oferta => _oferta;
 
-  set oferta(int value) {
-    _oferta = value;
-  }
-
-  int get demanda => _demanda;
-
-  set demanda(int value) {
-    _demanda = value;
-  }
 
   get radio => _radio;
 
@@ -52,14 +39,13 @@ class ModeloNodoN {
       json['y'],
       json['radio'],
       json['mensaje'],
-      json['oferta'], // Asigna el valor de oferta desde el JSON
-      json['demanda'], // Asigna el valor de demanda desde el JSON
+
     );
   }
 
   @override
   String toString() {
-    return 'ModeloNodoN{id: $_id, x: $_x, y: $_y, radio: $_radio, mensaje: $_mensaje, oferta: $_oferta, demanda: $_demanda}';
+    return 'ModeloNodoN{id: $_id, x: $_x, y: $_y, radio: $_radio, mensaje: $_mensaje}';
   }
 
   Map<String, dynamic> toJson() {
@@ -69,8 +55,6 @@ class ModeloNodoN {
       'y': y,
       'radio': radio,
       'mensaje': mensaje,
-      'oferta': oferta, // Agrega el campo de oferta al JSON
-      'demanda': demanda, // Agrega el campo de demanda al JSON
     };
   }
 }

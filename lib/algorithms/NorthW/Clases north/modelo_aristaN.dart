@@ -1,0 +1,68 @@
+class ModeloAristaN {
+  String idNodoInicial, idNodoFinal;
+  double _xinicio, _xfinal;
+  double _yinicio, _yfinal;
+  String peso;
+  bool _ida;
+  bool dirigido;
+
+  ModeloAristaN(this.idNodoInicial, this.idNodoFinal, this._xinicio,
+      this._yinicio, this._xfinal, this._yfinal, this.peso, this._ida, this.dirigido);
+
+  get yfinal => _yfinal;
+  get yinicio => _yinicio;
+  get xfinal => _xfinal;
+  get xinicio => _xinicio;
+  get ida => _ida;
+
+  set yfinal(value) {
+    _yfinal = value;
+  }
+
+  set yinicio(value) {
+    _yinicio = value;
+  }
+
+  set xfinal(value) {
+    _xfinal = value;
+  }
+
+  set xinicio(value) {
+    _xinicio = value;
+  }
+
+  
+
+  @override
+  String toString() {
+    return 'ModeloArista{idNodoInicial: $idNodoInicial, idNodoFinal: $idNodoFinal, peso: $peso, _ida: $_ida}, _xinicio: $_xinicio, _xfinal: $_xfinal, _yinicio: $_yinicio, _yfinal: $_yfinal';
+  }
+
+  toJson(){
+    return {
+      'idNodoInicial': idNodoInicial,
+      'idNodoFinal': idNodoFinal,
+      'xinicio': _xinicio,
+      'xfinal': _xfinal,
+      'yinicio': _yinicio,
+      'yfinal': _yfinal,
+      'peso': peso,
+      'ida': _ida,
+      'dirigido': dirigido,
+    };
+  }
+
+    static ModeloAristaN fromJson(Map<String, dynamic> json, item) {
+    return ModeloAristaN(
+      json['idNodoInicial'],
+      json['idNodoFinal'],
+      json['xinicio'],
+      json['xfinal'],
+      json['yinicio'],
+      json['yfinal'],
+      json['peso'],
+      json['ida'],
+      json['dirigido'],
+    );
+  }
+}

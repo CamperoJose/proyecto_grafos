@@ -1,15 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:proyecto_grafos/classes/modelo_arista.dart';
-import 'package:proyecto_grafos/classes/modelo_nodo.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/modelo_aristaN.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/modelo_nodoN.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/figures/nodo.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/figures/union.dart';
 import 'package:proyecto_grafos/components/dropdown_component.dart';
-import 'package:proyecto_grafos/components/figures/union.dart';
 import 'package:proyecto_grafos/components/my_alert_error_dialog.dart';
 import 'package:proyecto_grafos/components/my_botton_app_bar.dart';
-import 'package:proyecto_grafos/data.dart';
-import 'package:proyecto_grafos/matriz.dart';
 
-import '../../components/figures/nodo.dart';
+import 'Clases north/dataN.dart';
 import 'Clases north/speedNorth.dart';
 import 'app_bar_north.dart';
 
@@ -90,7 +90,7 @@ class _HomeState extends State<HomeNorth> {
                                       },
                                     );
                                   } else {
-                                    vNodo.add(ModeloNodo(
+                                    vNodo.add(ModeloNodoN(
                                         (vNodo.length + 1).toString(),
                                         des.globalPosition.dx,
                                         des.globalPosition.dy, 30,
@@ -140,7 +140,7 @@ class _HomeState extends State<HomeNorth> {
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
                       if (pos > 0) {
-                        ModeloNodo objD = vNodo
+                        ModeloNodoN objD = vNodo
                             .where((element) => int.parse(element.id) == pos)
                             .first;
                         var listJoins = vUniones.where((element) =>
@@ -166,7 +166,7 @@ class _HomeState extends State<HomeNorth> {
                     case 4: //AGREGANDO ARISTA
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
-                      ModeloNodo objN = vNodo
+                      ModeloNodoN objN = vNodo
                           .where((element) => int.parse(element.id) == pos)
                           .first;
                       if (joinModo == 1) {
@@ -219,7 +219,7 @@ class _HomeState extends State<HomeNorth> {
                                             yinicial != -1 &&
                                             xfinal != -1 &&
                                             yfinal != -1) {
-                                          vUniones.add(ModeloArista(
+                                          vUniones.add(ModeloAristaN(
                                               idInicial,
                                               objN.id,
                                               xinicial,
@@ -261,7 +261,7 @@ class _HomeState extends State<HomeNorth> {
                                         if (joinModo == 2 && xinicial != -1 &&
                                             yinicial != -1 && xfinal != -1 &&
                                             yfinal != -1) {
-                                          vUniones.add(ModeloArista(
+                                          vUniones.add(ModeloAristaN(
                                               idInicial,
                                               objN.id,
                                               xinicial,
@@ -302,7 +302,7 @@ class _HomeState extends State<HomeNorth> {
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
                       if (pos > 0) {
-                        ModeloNodo objE = vNodo
+                        ModeloNodoN objE = vNodo
                             .where((element) => int.parse(element.id) == pos)
                             .first;
                         _textFieldController2.text = objE.mensaje;
@@ -356,7 +356,7 @@ class _HomeState extends State<HomeNorth> {
                       int pos = estaSobreNodo(
                           des.globalPosition.dx, des.globalPosition.dy);
                       if (pos > 0) {
-                        ModeloNodo objS = vNodo
+                        ModeloNodoN objS = vNodo
                             .where((element) => int.parse(element.id) == pos)
                             .first;
                         var listJoins = vUniones.where((element) =>

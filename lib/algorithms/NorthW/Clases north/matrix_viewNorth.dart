@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-
-import '../../../matriz.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
 
 void main() => runApp(MaterialApp(home: MatrixView()));
 
 class MatrixView extends StatelessWidget {
-  List<List<String>> textValues =
-  List.generate(matrixArists.length, (_) => List.filled(values.length, ''));
-  List<List<TextEditingController>> textControllers =
-  List.generate(matrixArists.length, (_) => List.filled(values.length, TextEditingController()));
+  List<String> textValuesColumns = List.generate(values.length, (index) => "",);
+  List<String> textValuesRow = List.generate(values.length, (index) => "",);
+
+  List<List<String>> textValues = List.generate(values.length, (_) => List.filled(values.length, ''));
+  List<List<TextEditingController>> textControllers = List.generate(values.length, (_) => List.filled(values.length, TextEditingController()));
+  List<List<int>> matrix = List.generate(values.length, (_) => List.filled(values.length, 0));
 
   @override
   Widget build(BuildContext context) {
+
+    List<List<int>> reducedMatrix = [];
     return Scaffold(
       appBar: AppBar(
         title: Text('Matrices de Adyacencia'),
@@ -38,7 +41,9 @@ class MatrixView extends StatelessWidget {
             },
             onSelected: (String choice) {
               if (choice == 'Minimizar') {
-                showMinimizeAlertDialog(context, textControllers);
+                print('asd:$textControllers');
+                //runNorthwestAlgorithm(values, reducedMatrix, textControllers);
+                //showMinimizeAlertDialog(context, textControllers);
               }
             },
           ),
@@ -65,15 +70,53 @@ class _MatrixWidget extends StatelessWidget {
   final List<List<TextEditingController>> textControllers;
 
   _MatrixWidget({
-    required this.matrix,
-    required this.values,
-    required this.textControllers,
-  });
+  required this.matrix,
+  required this.values,
+  required this.textControllers,
+});
 
   @override
   Widget build(BuildContext context) {
     List<Color> columnColors = [Colors.blueGrey.withOpacity(0.2), Colors.white];
     int currentColumnColorIndex = 0;
+
+    // Obtén la lista de filas y columnas con datos no nulos
+    List<String> rows = [];
+    List<String> columns = [];
+    List<List<int>> reducedMatrix = [];
+
+    //entrradas de texto
+    for (int i = 0; i < matrix.length; i++) {
+      List<TextEditingController> rowControllers = [];
+      for (int j = 0; j < matrix[0].length; j++) {
+        rowControllers.add(TextEditingController());
+      }
+      textControllers.add(rowControllers);
+    }
+
+    // Encuentra las filas con datos no nulos
+    for (int row = 0; row < matrix.length; row++) {
+      bool hasData = matrix[row].any((value) => value != 0);
+      if (hasData) {
+        rows.add(values[row]);
+      }
+    }
+
+    // Encuentra las columnas con datos no nulos
+    for (int col = 0; col < matrix[0].length; col++) {
+      bool hasData = matrix.any((row) => row[col] != 0);
+      if (hasData) {
+        columns.add(values[col]);
+      }
+    }
+
+    // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
+    reducedMatrix = matrix
+        .where((row) => row.any((value) => value != 0))
+        .map((row) => row.where((value) => value != 0).toList())
+        .toList();
+
+
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -92,19 +135,19 @@ class _MatrixWidget extends StatelessWidget {
               ),
               children: [
                 _TableCell(''),
-                ...values.map((value) {
+                ...columns.map((value) {
                   return _TableCell(value, isHeader: true);
                 }),
                 _TableCell('', isHeader: true),
               ],
             ),
-            ...matrix.asMap().entries.map((entry) {
+            ...reducedMatrix.asMap().entries.map((entry) {
               int rowIndex = entry.key;
               List<int> rowValues = entry.value;
 
               return TableRow(
                 children: [
-                  _TableCell(values[rowIndex], isHeader: true),
+                  _TableCell(rows[rowIndex], isHeader: true),
                   ...rowValues.asMap().entries.map((entry) {
                     int value = entry.value;
 
@@ -117,15 +160,20 @@ class _MatrixWidget extends StatelessWidget {
                       backgroundColor: columnColors[currentColumnColorIndex],
                     );
                   }).toList(),
-                  _AddTextCell(textControllers[rowIndex][values.length - 1]),
+                  //_AddTextCell(textControllers[rowIndex][columns.length - 1]),
+                  _AddTextCell(textControllers[0][0]),
+
                 ],
               );
             }).toList(),
+
+
+
             TableRow(
               children: [
                 _TableCell('', isHeader: true),
-                ...values.map((value) {
-                  return _AddTextCell(textControllers[matrix.length - 1][values.indexOf(value)]);
+                ...columns.map((value) {
+                  return _AddTextCell(textControllers[reducedMatrix.length - 1][columns.indexOf(value)]);
                 }),
                 _TableCell('', isHeader: true),
               ],
@@ -135,6 +183,9 @@ class _MatrixWidget extends StatelessWidget {
       ),
     );
   }
+
+
+
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -241,3 +292,60 @@ void showMinimizeAlertDialog(BuildContext context, List<List<TextEditingControll
     },
   );
 }
+void runNorthwestAlgorithm(
+    List<String> values,
+    List<List<int>> reducedMatrix,
+    List<List<TextEditingController>> textControllers,
+    ) {
+  int rows = reducedMatrix.length;
+  int cols = reducedMatrix[0].length;
+
+  int row = 0;
+  int col = 0;
+
+  while (row < rows && col < cols) {
+    int availableSupply = int.parse(values[row]);
+    int demand = 0;
+    for (int r = 0; r < rows; r++) {
+      demand += int.parse(textControllers[r][col].text);
+    }
+
+    if (availableSupply >= demand) {
+      // Asigna la cantidad máxima posible
+      textControllers[row][col].text = demand.toString();
+      // Actualiza la oferta restante
+      values[row] = (availableSupply - demand).toString();
+      // Elimina la columna si ya no hay demanda en ella
+      if (demand == 0) {
+        for (int r = 0; r < rows; r++) {
+          textControllers[r].removeAt(col);
+        }
+        col++;
+      } else {
+        row++;
+      }
+    } else {
+      // Asigna la cantidad disponible
+      textControllers[row][col].text = availableSupply.toString();
+      // Actualiza la demanda restante
+      for (int r = 0; r < rows; r++) {
+        textControllers[r][col].text = availableSupply.toString();
+      }
+      // Elimina la fila si ya no hay oferta en ella
+      if (availableSupply == 0) {
+        textControllers.removeAt(row);
+        reducedMatrix.removeAt(row);
+        values.removeAt(row);
+        rows--;
+      } else {
+        col++;
+      }
+    }
+  }
+}
+
+//edicion 1
+
+
+
+

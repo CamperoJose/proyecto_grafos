@@ -1,18 +1,11 @@
-import 'modelo_arista.dart';
+import 'modelo_aristaN.dart';
 import 'modelo_nodoN.dart';
 
 List<ModeloNodoN> vNodo = [];
-List<ModeloArista> vUniones = [];
+List<ModeloAristaN> vUniones = [];
 
 //inizializando un vector de strings vacios:
 List<String> values = [];
-
-
-//inizializando una matriz de ints  con valores (1,2), (2,2):
-// List<List<int>> matriz = [
-//   [1, 2],
-//   [2, 2]
-// ];
 
 List<List<int>> matrixTrueFalse = [];
 

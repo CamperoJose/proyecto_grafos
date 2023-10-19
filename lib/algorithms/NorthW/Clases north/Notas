@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
+
+
+
+ final List<List<TextEditingController>> textControllers;
+ required this.textControllers,
+
+
+
+ return _TableCell(
+                      value.toString(),
+                      isBold: value != 0,
+                      backgroundColor: columnColors[currentColumnColorIndex],
+                    );
+                  }).toList(),
+                  _AddTextCell(textControllers[rowIndex][values.length - 1]),
+                ],
+              );
+            }).toList(),
+            TableRow(
+              children: [
+                _TableCell('', isHeader: true),
+                ...values.map((value) {
+                  return _AddTextCell(textControllers[matrix.length - 1][values.indexOf(value)]);
+                }),
+                _TableCell('', isHeader: true),
+              ],
+            ),

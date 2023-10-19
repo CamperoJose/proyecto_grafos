@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/modelo_arista.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/modelo_aristaN.dart';
 
 import 'package:proyecto_grafos/algorithms/NorthW/algoritmo_north.dart';
 import 'Clases north/matriz.dart';
@@ -17,7 +17,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   List<String> demanda = [];
   List<String> oferta = [];
-  List<ModeloArista> vLineas = [];
+  List<ModeloAristaN> vLineas = [];
 
   @override
   Widget build(BuildContext context) {
