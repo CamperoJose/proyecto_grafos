@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:proyecto_grafos/algorithms/arboles/arboles_binarios.dart';
 import 'package:proyecto_grafos/algorithms/jhonson/home_jhonson.dart';
 import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_manual_view.dart';
 import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_view.dart';
@@ -11,7 +12,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -28,6 +30,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _animationController.dispose();
     super.dispose();
   }
+
   final List<Map<String, String>> graphImages = [
     {
       'imagePath': 'assets/img01.jpeg',
@@ -257,109 +260,131 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             ),
                           );
                         },
-                      );showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.black, // Fondo negro
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.white, width: 1), // Borde blanco delgado
-        borderRadius: BorderRadius.circular(10), // Bordes redondeados
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      title: Text(
-        'Algoritmos de Ordenamiento',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-        ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Seleccione una opción para ver el algoritmo de ordenamiento',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrdenamientoView(),
-                ),
-              );
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.teal), // Cambia el color del botón
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Bordes redondeados
-                ),
-              ),
-              elevation: MaterialStateProperty.all(4), // Elevación del botón
-            ),
-            child: AnimatedBuilder(
-              animation: _animationController, // Animación de crecimiento y reducción
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: 1 + _animationController.value * 0.05, // Escala con animación
-                  child: child,
-                );
-              },
-              child: Text(
-                'Números Aleatorios',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrdenamientoManualView(),
-                ),
-              );
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.indigo), // Cambia el color del botón
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Bordes redondeados
-                ),
-              ),
-              elevation: MaterialStateProperty.all(4), // Elevación del botón
-            ),
-            child: AnimatedBuilder(
-              animation: _animationController, // Animación de crecimiento y reducción
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: 1 + _animationController.value * 0.05, // Escala con animación
-                  child: child,
-                );
-              },
-              child: Text(
-                'Ingresar Números Manualmente',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  },
-);
-
+                      );
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.black, // Fondo negro
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: Colors.white,
+                                  width: 1), // Borde blanco delgado
+                              borderRadius: BorderRadius.circular(
+                                  10), // Bordes redondeados
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            title: Text(
+                              'Algoritmos de Ordenamiento',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Seleccione una opción para ver el algoritmo de ordenamiento',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrdenamientoView(),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors
+                                            .teal), // Cambia el color del botón
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            10), // Bordes redondeados
+                                      ),
+                                    ),
+                                    elevation: MaterialStateProperty.all(
+                                        4), // Elevación del botón
+                                  ),
+                                  child: AnimatedBuilder(
+                                    animation:
+                                        _animationController, // Animación de crecimiento y reducción
+                                    builder: (context, child) {
+                                      return Transform.scale(
+                                        scale: 1 +
+                                            _animationController.value *
+                                                0.05, // Escala con animación
+                                        child: child,
+                                      );
+                                    },
+                                    child: Text(
+                                      'Números Aleatorios',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrdenamientoManualView(),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors
+                                            .indigo), // Cambia el color del botón
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            10), // Bordes redondeados
+                                      ),
+                                    ),
+                                    elevation: MaterialStateProperty.all(
+                                        4), // Elevación del botón
+                                  ),
+                                  child: AnimatedBuilder(
+                                    animation:
+                                        _animationController, // Animación de crecimiento y reducción
+                                    builder: (context, child) {
+                                      return Transform.scale(
+                                        scale: 1 +
+                                            _animationController.value *
+                                                0.05, // Escala con animación
+                                        child: child,
+                                      );
+                                    },
+                                    child: Text(
+                                      'Ingresar Números Manualmente',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
                     },
                     child: Text('Algoritmos de Ordenamiento'),
                     style: ElevatedButton.styleFrom(
@@ -371,6 +396,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       ),
                     ),
                   ),
+                ],
+              ),
+
+              SizedBox(height: 20,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ArbolesBinariosScreen()));
+                    },
+                    child: Text('Árboles'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 57, 144, 30),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+          
                 ],
               ),
               SizedBox(height: 20),
@@ -482,6 +533,4 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
     );
   }
-  
-
 }
