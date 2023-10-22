@@ -38,8 +38,8 @@ class ArbolPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final textStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 20, // Reducimos el tamaño del texto
+      color: const Color.fromARGB(255, 255, 255, 255),
+      fontSize: 23, // Reducimos el tamaño del texto
       fontWeight: FontWeight.bold,
     );
 

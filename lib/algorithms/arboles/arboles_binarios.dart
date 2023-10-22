@@ -113,56 +113,58 @@ class _ArbolesBinariosScreenState extends State<ArbolesBinariosScreen> {
       //   ],
       // ),
 
-appBar: AppBar(
-  leading: IconButton(
-    icon: Icon(Icons.arrow_back),
-    onPressed: () {
-      Navigator.of(this.context).pop();
-    },
-  ),
-  title: Text(
-    'Graficador de Árboles Binarios',
-    style: TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w100,
-      fontFamily: 'Roboto',
-    ),
-  ),
-  actions: [
-    PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert, color: Colors.white,), // Icono de tres puntos
-      onSelected: (String choice) {
-        // Función para manejar la opción seleccionada
-        if (choice == 'inOrder') {
-          _showDialogIn();
-        } else if (choice == 'postOrder') {
-          _showDialogPost();
-        } else if (choice == 'preOrder') {
-          _showDialogPre();
-        }
-      },
-      itemBuilder: (BuildContext context) {
-        return [
-          PopupMenuItem<String>(
-            value: 'inOrder',
-            child: Text('Calcular In Order'),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(this.context).pop();
+          },
+        ),
+        title: Text(
+          'Graficador de Árboles Binarios',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w100,
+            fontFamily: 'Roboto',
           ),
-          PopupMenuItem<String>(
-            value: 'postOrder',
-            child: Text('Calcular Post Order'),
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.white,
+            ), // Icono de tres puntos
+            onSelected: (String choice) {
+              // Función para manejar la opción seleccionada
+              if (choice == 'inOrder') {
+                _showInOrderDialog();
+              } else if (choice == 'postOrder') {
+                _showDialogPost();
+              } else if (choice == 'preOrder') {
+                _showDialogPre();
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem<String>(
+                  value: 'inOrder',
+                  child: Text('Calcular In Order'),
+                ),
+                PopupMenuItem<String>(
+                  value: 'postOrder',
+                  child: Text('Calcular Post Order'),
+                ),
+                PopupMenuItem<String>(
+                  value: 'preOrder',
+                  child: Text('Calcular Pre Order'),
+                ),
+              ];
+            },
           ),
-          PopupMenuItem<String>(
-            value: 'preOrder',
-            child: Text('Calcular Pre Order'),
-          ),
-        ];
-      },
-    ),
-  ],
-  backgroundColor: Color.fromARGB(255, 5, 56, 14),
-  elevation: 5,
-),
-
+        ],
+        backgroundColor: Color.fromARGB(255, 5, 56, 14),
+        elevation: 5,
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -175,7 +177,6 @@ appBar: AppBar(
         },
         child: Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 5, 56, 14),
-
       ),
       body: Container(
         color: Color.fromARGB(
@@ -189,16 +190,45 @@ appBar: AppBar(
     );
   }
 
-  void _showDialogIn() {
+  void _showInOrderDialog() {
+    final TextStyle titleStyle = TextStyle(
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.purple.shade900, // Cambia el color del título
+    );
+
+    final TextStyle contentStyle = TextStyle(
+      fontSize: 20.0,
+      color: Colors.black,
+    );
+
+    final TextStyle cancelButtonStyle = TextStyle(
+      color: Colors.red,
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+    );
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('InOrder'),
-          content: Text(objArbol.inOrder(objArbol.raiz)),
+          backgroundColor: Colors.white, // Cambia el fondo del diálogo
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: Text('In Order', style: titleStyle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                "{ ${objArbol.inOrder(objArbol.raiz)} }",
+                style: contentStyle,
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cerrar', style: cancelButtonStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -209,16 +239,45 @@ appBar: AppBar(
     );
   }
 
-  void _showDialogPost() {
+    void _showDialogPost() {
+    final TextStyle titleStyle = TextStyle(
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.purple.shade900, // Cambia el color del título
+    );
+
+    final TextStyle contentStyle = TextStyle(
+      fontSize: 20.0,
+      color: Colors.black,
+    );
+
+    final TextStyle cancelButtonStyle = TextStyle(
+      color: Colors.red,
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+    );
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('PostOrder'),
-          content: Text(objArbol.postOrder(objArbol.raiz)),
+          backgroundColor: Colors.white, // Cambia el fondo del diálogo
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: Text('Post Order', style: titleStyle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                "{ ${objArbol.postOrder(objArbol.raiz)} }",
+                style: contentStyle,
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cerrar', style: cancelButtonStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -229,16 +288,45 @@ appBar: AppBar(
     );
   }
 
-  void _showDialogPre() {
+    void _showDialogPre() {
+    final TextStyle titleStyle = TextStyle(
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.purple.shade900, // Cambia el color del título
+    );
+
+    final TextStyle contentStyle = TextStyle(
+      fontSize: 20.0,
+      color: Colors.black,
+    );
+
+    final TextStyle cancelButtonStyle = TextStyle(
+      color: Colors.red,
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+    );
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('PreOrder'),
-          content: Text(objArbol.preOrder(objArbol.raiz)),
+          backgroundColor: Colors.white, // Cambia el fondo del diálogo
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: Text('Pre Order', style: titleStyle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                "{ ${objArbol.preOrder(objArbol.raiz)} }",
+                style: contentStyle,
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cerrar', style: cancelButtonStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -248,6 +336,8 @@ appBar: AppBar(
       },
     );
   }
+
+
 
   _ingresoListaDialog(context) {
     TextEditingController text1Controller = TextEditingController();
