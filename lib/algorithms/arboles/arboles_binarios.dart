@@ -113,24 +113,56 @@ class _ArbolesBinariosScreenState extends State<ArbolesBinariosScreen> {
       //   ],
       // ),
 
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(this.context).pop();
-          },
-        ),
-        title: Text(
-          'Graficador de Árboles Binarios',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w100,
-            fontFamily: 'Roboto',
+appBar: AppBar(
+  leading: IconButton(
+    icon: Icon(Icons.arrow_back),
+    onPressed: () {
+      Navigator.of(this.context).pop();
+    },
+  ),
+  title: Text(
+    'Graficador de Árboles Binarios',
+    style: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w100,
+      fontFamily: 'Roboto',
+    ),
+  ),
+  actions: [
+    PopupMenuButton<String>(
+      icon: Icon(Icons.more_vert, color: Colors.white,), // Icono de tres puntos
+      onSelected: (String choice) {
+        // Función para manejar la opción seleccionada
+        if (choice == 'inOrder') {
+          _showDialogIn();
+        } else if (choice == 'postOrder') {
+          _showDialogPost();
+        } else if (choice == 'preOrder') {
+          _showDialogPre();
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return [
+          PopupMenuItem<String>(
+            value: 'inOrder',
+            child: Text('Calcular In Order'),
           ),
-        ),
-        backgroundColor: Color.fromARGB(255, 5, 56, 14),
-        elevation: 5,
-      ),
+          PopupMenuItem<String>(
+            value: 'postOrder',
+            child: Text('Calcular Post Order'),
+          ),
+          PopupMenuItem<String>(
+            value: 'preOrder',
+            child: Text('Calcular Pre Order'),
+          ),
+        ];
+      },
+    ),
+  ],
+  backgroundColor: Color.fromARGB(255, 5, 56, 14),
+  elevation: 5,
+),
+
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -143,7 +175,7 @@ class _ArbolesBinariosScreenState extends State<ArbolesBinariosScreen> {
         },
         child: Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 5, 56, 14),
-        
+
       ),
       body: Container(
         color: Color.fromARGB(
