@@ -256,6 +256,7 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
   }
 
   List<TextEditingController> textControllers = List.generate(values.length, (index) => TextEditingController());
+  List<int> costos = [];
 
   AlertDialog alertDialog = AlertDialog(
     title: Text('Lista Distributiva'),
@@ -269,18 +270,24 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
               Expanded(
                 child: TextField(
                   controller: textControllers[i],
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                 ),
               ),
             ],
           ),
       ],
     ),
+
     actions: <Widget>[
       TextButton(
         child: Text('Calcular'),
         onPressed: () {
-          print('Matriz reducida:$textControllers');
+          for (TextEditingController controller in textControllers) {
+            String text = controller.text;
+            int value = int.tryParse(text) ?? 0; // Si no se puede convertir a entero, se establece en 0
+            costos.add(value);
+          }
+          print('Valores enteros: $costos');
           // Aquí puedes acceder a los valores ingresados en los campos de texto y realizar el cálculo necesario.
           for (int i = 0; i < values.length ; i++) {
             String startNode = values[i];
