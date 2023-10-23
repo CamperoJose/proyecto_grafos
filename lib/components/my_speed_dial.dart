@@ -90,7 +90,7 @@ class MySpeedDial extends StatelessWidget {
           onTap: () async {
             //leer pdf desde el link https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing:
             const url =
-                'https://drive.google.com/file/d/1FJhjMdhmGixprzqlrxElGh0gt0edK_aM/view?usp=sharing';
+                'https://drive.google.com/file/d/19imkscGGA0olIuq7-ZACbOErM0rvUJnU/view?usp=sharing';
             if (await canLaunch(url)) {
               await launch(url);
             } else {
