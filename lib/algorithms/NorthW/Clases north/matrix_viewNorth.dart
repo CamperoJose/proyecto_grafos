@@ -10,11 +10,37 @@ class MatrixView extends StatelessWidget {
   List<List<String>> textValues = List.generate(values.length, (_) => List.filled(values.length, ''));
   List<List<TextEditingController>> textControllers = List.generate(values.length, (_) => List.filled(values.length, TextEditingController()));
   List<List<int>> matrix = List.generate(values.length, (_) => List.filled(values.length, 0));
+  List<String> letras= values;
 
   @override
   Widget build(BuildContext context) {
 
+    List<String> rows = [];
+    List<String> columns = [];
     List<List<int>> reducedMatrix = [];
+
+
+    // Encuentra las filas con datos no nulos
+    for (int row = 0; row < matrix.length; row++) {
+      bool hasData = matrix[row].any((value) => value != 0);
+      if (hasData) {
+        rows.add(values[row]);
+      }
+    }
+
+    // Encuentra las columnas con datos no nulos
+    for (int col = 0; col < matrix[0].length; col++) {
+      bool hasData = matrix.any((row) => row[col] != 0);
+      if (hasData) {
+        columns.add(values[col]);
+
+      }
+    }
+    // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
+    reducedMatrix = matrix
+        .where((row) => row.any((value) => value != 0))
+        .map((row) => row.where((value) => value != 0).toList())
+        .toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Matrices de Adyacencia'),
@@ -41,9 +67,8 @@ class MatrixView extends StatelessWidget {
             },
             onSelected: (String choice) {
               if (choice == 'Minimizar') {
-                print('asd:$textControllers');
-                //runNorthwestAlgorithm(values, reducedMatrix, textControllers);
-                //showMinimizeAlertDialog(context, textControllers);
+                print('Matriz reducida:$values');
+                _showMinimizeAlertDialog(context, values);
               }
             },
           ),
@@ -69,6 +94,7 @@ class _MatrixWidget extends StatelessWidget {
   final List<String> values;
   final List<List<TextEditingController>> textControllers;
 
+
   _MatrixWidget({
   required this.matrix,
   required this.values,
@@ -85,14 +111,6 @@ class _MatrixWidget extends StatelessWidget {
     List<String> columns = [];
     List<List<int>> reducedMatrix = [];
 
-    //entrradas de texto
-    for (int i = 0; i < matrix.length; i++) {
-      List<TextEditingController> rowControllers = [];
-      for (int j = 0; j < matrix[0].length; j++) {
-        rowControllers.add(TextEditingController());
-      }
-      textControllers.add(rowControllers);
-    }
 
     // Encuentra las filas con datos no nulos
     for (int row = 0; row < matrix.length; row++) {
@@ -107,9 +125,9 @@ class _MatrixWidget extends StatelessWidget {
       bool hasData = matrix.any((row) => row[col] != 0);
       if (hasData) {
         columns.add(values[col]);
+
       }
     }
-
     // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
     reducedMatrix = matrix
         .where((row) => row.any((value) => value != 0))
@@ -138,7 +156,6 @@ class _MatrixWidget extends StatelessWidget {
                 ...columns.map((value) {
                   return _TableCell(value, isHeader: true);
                 }),
-                _TableCell('', isHeader: true),
               ],
             ),
             ...reducedMatrix.asMap().entries.map((entry) {
@@ -160,28 +177,15 @@ class _MatrixWidget extends StatelessWidget {
                       backgroundColor: columnColors[currentColumnColorIndex],
                     );
                   }).toList(),
-                  //_AddTextCell(textControllers[rowIndex][columns.length - 1]),
-                  _AddTextCell(textControllers[0][0]),
-
                 ],
               );
             }).toList(),
-
-
-
-            TableRow(
-              children: [
-                _TableCell('', isHeader: true),
-                ...columns.map((value) {
-                  return _AddTextCell(textControllers[reducedMatrix.length - 1][columns.indexOf(value)]);
-                }),
-                _TableCell('', isHeader: true),
-              ],
-            ),
           ],
         ),
       ),
+
     );
+
   }
 
 
@@ -227,55 +231,65 @@ class _TableCell extends StatelessWidget {
     );
   }
 }
-
-class _AddTextCell extends StatelessWidget {
-  final TextEditingController controller;
-
-  _AddTextCell(this.controller);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(4),
-      alignment: Alignment.center,
-      color: Colors.white,
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.all(0),
+void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
+  if (values.length % 2 != 0) {
+    AlertDialog errorDialog = AlertDialog(
+      title: Text('Error'),
+      content: Text('La lista no tiene un número par de elementos.'),
+      actions: <Widget>[
+        TextButton(
+          child: Text('Cerrar'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-      ),
+      ],
     );
-  }
-}
 
-void showMinimizeAlertDialog(BuildContext context, List<List<TextEditingController>> textControllers) {
-  List<List<String>> textData = [];
-
-  for (int rowIndex = 0; rowIndex < textControllers.length; rowIndex++) {
-    List<String> rowData = [];
-    for (int columnIndex = 0; columnIndex < textControllers[rowIndex].length; columnIndex++) {
-      String value = textControllers[rowIndex][columnIndex].text;
-      rowData.add(value);
-    }
-    textData.add(rowData);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return errorDialog;
+      },
+    );
+    return;
   }
+
+  List<TextEditingController> textControllers = List.generate(values.length, (index) => TextEditingController());
 
   AlertDialog alertDialog = AlertDialog(
-    title: Text('Datos de TextFields'),
+    title: Text('Lista Distributiva'),
     content: Column(
-      children: textData.map((rowData) {
-        return Row(
-          children: rowData.map((value) {
-            return Expanded(
-              child: Text(value),
-            );
-          }).toList(),
-        );
-      }).toList(),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (int i = 0; i < values.length ; i++)
+          Row(
+            children: [
+              Text('${values[i]} => '),
+              Expanded(
+                child: TextField(
+                  controller: textControllers[i],
+                  keyboardType: TextInputType.text,
+                ),
+              ),
+            ],
+          ),
+      ],
     ),
     actions: <Widget>[
+      TextButton(
+        child: Text('Calcular'),
+        onPressed: () {
+          print('Matriz reducida:$textControllers');
+          // Aquí puedes acceder a los valores ingresados en los campos de texto y realizar el cálculo necesario.
+          for (int i = 0; i < values.length ; i++) {
+            String startNode = values[i];
+            String endNode = textControllers[i].text;
+            // Realiza el cálculo o procesamiento de los datos según tus necesidades.
+            // Puedes mostrar los resultados en otro AlertDialog o de la manera que desees.
+          }
+        },
+      ),
       TextButton(
         child: Text('Cerrar'),
         onPressed: () {
@@ -292,57 +306,21 @@ void showMinimizeAlertDialog(BuildContext context, List<List<TextEditingControll
     },
   );
 }
-void runNorthwestAlgorithm(
-    List<String> values,
-    List<List<int>> reducedMatrix,
-    List<List<TextEditingController>> textControllers,
-    ) {
-  int rows = reducedMatrix.length;
-  int cols = reducedMatrix[0].length;
 
-  int row = 0;
-  int col = 0;
+List<Widget> _generateDistributiveList(List<String> values) {
+  List<Widget> distributiveList = [];
+  int halfLength = values.length ~/ 2;
 
-  while (row < rows && col < cols) {
-    int availableSupply = int.parse(values[row]);
-    int demand = 0;
-    for (int r = 0; r < rows; r++) {
-      demand += int.parse(textControllers[r][col].text);
-    }
-
-    if (availableSupply >= demand) {
-      // Asigna la cantidad máxima posible
-      textControllers[row][col].text = demand.toString();
-      // Actualiza la oferta restante
-      values[row] = (availableSupply - demand).toString();
-      // Elimina la columna si ya no hay demanda en ella
-      if (demand == 0) {
-        for (int r = 0; r < rows; r++) {
-          textControllers[r].removeAt(col);
-        }
-        col++;
-      } else {
-        row++;
-      }
-    } else {
-      // Asigna la cantidad disponible
-      textControllers[row][col].text = availableSupply.toString();
-      // Actualiza la demanda restante
-      for (int r = 0; r < rows; r++) {
-        textControllers[r][col].text = availableSupply.toString();
-      }
-      // Elimina la fila si ya no hay oferta en ella
-      if (availableSupply == 0) {
-        textControllers.removeAt(row);
-        reducedMatrix.removeAt(row);
-        values.removeAt(row);
-        rows--;
-      } else {
-        col++;
-      }
+  for (int i = 0; i < halfLength; i++) {
+    for (int j = halfLength; j < values.length; j++) {
+      distributiveList.add(Text('${values[i]} => ${values[j]}'));
     }
   }
+
+  return distributiveList;
 }
+
+
 
 //edicion 1
 
