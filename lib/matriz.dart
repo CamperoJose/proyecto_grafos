@@ -3,6 +3,7 @@ import 'classes/modelo_nodo.dart';
 
 List<ModeloNodo> vNodo = [];
 List<ModeloArista> vUniones = [];
+List<ModeloArista> vUnionesy = [];
 
 //inizializando un vector de strings vacios:
 List<String> values = [];
