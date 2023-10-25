@@ -296,21 +296,39 @@ class _ArbolesBinariosScreenListasState
         builder: (context) {
           return StatefulBuilder(builder: (context, setStatem) {
             return AlertDialog(
-              title: const Text("Ingrese las listas separadas por commas y sin espacios"),
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Fondo con un tono azul grisáceo
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+              title: const Text("INGRESAR LISTAS", style: TextStyle(
+            color: const Color.fromARGB(255, 0, 0, 0), // Texto en color blanco
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            decorationStyle: TextDecorationStyle.wavy,
+
+
+          ),),
+            
               content: Form(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextField(
+                  Text("Valores separados por comma y sin espacios", style: TextStyle(color: Colors.green.shade900, fontSize: 16.0),),
+                  SizedBox(height: 20,),                  TextField(
                     controller: text2Controller,
+                    style: TextStyle(color: Colors.black),
                     decoration: const InputDecoration(
-                      labelText: 'Lista In Order',
+                      hintText: 'Lista In Order',
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                   TextField(
                     controller: text3Controller,
+                    style: TextStyle(color: Colors.black),
                     decoration: const InputDecoration(
-                      labelText: 'Lista Pre Order',
+                      hintText: 'Lista Pre Order',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      //color de borde:
                     ),
                   ),
                 ],
@@ -372,14 +390,31 @@ class _ArbolesBinariosScreenListasState
                     });
                     Navigator.of(context).pop();
                   },
-                  child: Text('OK'),
+                  style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.green), // Botón en verde
+            ),
+            child: Text(
+              "Aceptar",
+              style: TextStyle(
+                color: Colors.white, // Texto en color blanco
+                fontSize: 18.0,
+              ),
+            ),
                 ),
                 TextButton(
                   onPressed: () {
                     setState(() {});
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancelar'),
+                  style: TextButton.styleFrom(
+              primary: Colors.red, // Texto en rojo
+            ),
+            child: Text(
+              "Cancelar",
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
                 ),
               ],
             );
