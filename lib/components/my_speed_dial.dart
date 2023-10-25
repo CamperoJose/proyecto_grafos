@@ -74,11 +74,6 @@ class MySpeedDial extends StatelessWidget {
           backgroundColor: Colors.green.shade500,
           onTap: () {
             subirArchivo(context);
-
-            // setState(() {
-            //   subirArchivo(context).then((value) => setState(() {
-            //       }));
-            // });
           },
           label: 'Subir Grafo',
           labelStyle: TextStyle(fontWeight: FontWeight.w500),
