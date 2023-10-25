@@ -64,6 +64,8 @@ class _ArbolesBinariosScreenListasState
     }
   }
 
+  bool arbolDibujado = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,10 +123,21 @@ class _ArbolesBinariosScreenListasState
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _ingresoListaDialog(context);
+          if(arbolDibujado){
+            _ingresoListaDialog(context);
+            
+          }else{
+            //borrar arbol:
+            objArbol.resetArbol();
+            setState(() {
+              _painter = ArbolPainter(objArbol);
+              arbolDibujado = true;
+            });
+          }
+          
         },
-        child: Icon(Icons.list),
-        backgroundColor: Color.fromARGB(255, 5, 56, 14),
+        child: Icon(arbolDibujado?Icons.list:Icons.delete),
+        backgroundColor: arbolDibujado?Color.fromARGB(255, 5, 56, 14):const Color.fromARGB(255, 188, 32, 20),
       ),
       body: Container(
         color: Color.fromARGB(
@@ -296,25 +309,35 @@ class _ArbolesBinariosScreenListasState
         builder: (context) {
           return StatefulBuilder(builder: (context, setStatem) {
             return AlertDialog(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Fondo con un tono azul grisáceo
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-              title: const Text("INGRESAR LISTAS", style: TextStyle(
-            color: const Color.fromARGB(255, 0, 0, 0), // Texto en color blanco
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            decorationStyle: TextDecorationStyle.wavy,
+              backgroundColor: const Color.fromARGB(
+                  255, 255, 255, 255), // Fondo con un tono azul grisáceo
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              title: const Text(
+                "INGRESAR LISTAS",
+                style: TextStyle(
+                  color: const Color.fromARGB(
+                      255, 0, 0, 0), // Texto en color blanco
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  decorationStyle: TextDecorationStyle.wavy,
+                ),
+              ),
 
-
-          ),),
-            
               content: Form(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Valores separados por comma y sin espacios", style: TextStyle(color: Colors.green.shade900, fontSize: 16.0),),
-                  SizedBox(height: 20,),                  TextField(
+                  Text(
+                    "Valores separados por comma y sin espacios",
+                    style:
+                        TextStyle(color: Colors.green.shade900, fontSize: 16.0),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
                     controller: text2Controller,
                     style: TextStyle(color: Colors.black),
                     decoration: const InputDecoration(
@@ -369,11 +392,9 @@ class _ArbolesBinariosScreenListasState
                         .map((str) => int.parse(str.trim()))
                         .toList();
 
-
-
                     if (list2.toSet().length != list2.length ||
                         list3.toSet().length != list3.length) {
-                          showDialog(
+                      showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return MyAlertErrorDialog(
@@ -387,19 +408,21 @@ class _ArbolesBinariosScreenListasState
                     listToTree(selectedOption, list2, list3);
                     setState(() {
                       _painter = ArbolPainter(objArbol);
+                      arbolDibujado = false;
                     });
                     Navigator.of(context).pop();
                   },
                   style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.green), // Botón en verde
-            ),
-            child: Text(
-              "Aceptar",
-              style: TextStyle(
-                color: Colors.white, // Texto en color blanco
-                fontSize: 18.0,
-              ),
-            ),
+                    backgroundColor: MaterialStateProperty.all(
+                        Colors.green), // Botón en verde
+                  ),
+                  child: Text(
+                    "Aceptar",
+                    style: TextStyle(
+                      color: Colors.white, // Texto en color blanco
+                      fontSize: 18.0,
+                    ),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -407,14 +430,14 @@ class _ArbolesBinariosScreenListasState
                     Navigator.of(context).pop();
                   },
                   style: TextButton.styleFrom(
-              primary: Colors.red, // Texto en rojo
-            ),
-            child: Text(
-              "Cancelar",
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-            ),
+                    primary: Colors.red, // Texto en rojo
+                  ),
+                  child: Text(
+                    "Cancelar",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
                 ),
               ],
             );
