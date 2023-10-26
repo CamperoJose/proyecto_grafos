@@ -123,10 +123,9 @@ class _ArbolesBinariosScreenListasState
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if(arbolDibujado){
+          if (arbolDibujado) {
             _ingresoListaDialog(context);
-            
-          }else{
+          } else {
             //borrar arbol:
             objArbol.resetArbol();
             setState(() {
@@ -134,10 +133,11 @@ class _ArbolesBinariosScreenListasState
               arbolDibujado = true;
             });
           }
-          
         },
-        child: Icon(arbolDibujado?Icons.list:Icons.delete),
-        backgroundColor: arbolDibujado?Color.fromARGB(255, 5, 56, 14):const Color.fromARGB(255, 188, 32, 20),
+        child: Icon(arbolDibujado ? Icons.list : Icons.delete),
+        backgroundColor: arbolDibujado
+            ? Color.fromARGB(255, 5, 56, 14)
+            : const Color.fromARGB(255, 188, 32, 20),
       ),
       body: Container(
         color: Color.fromARGB(
@@ -405,12 +405,26 @@ class _ArbolesBinariosScreenListasState
                         },
                       );
                     }
-                    listToTree(selectedOption, list2, list3);
-                    setState(() {
+                    //TODO: VERIFICAR SI TODOS LOS VALORES DE LA LISTA DE list2 ESTÁN EN LA LISTA DE list3:
+                    if (list2.toSet().difference(list3.toSet()).isNotEmpty) {
+                      print("listas no coinciden");
+                      //mostrar mensaje pop up indicando el error, NO ALERT DIALOG:
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Listas no coinciden"),
+                        ),
+                      );
+
+                    } else {
+                      listToTree(selectedOption, list2, list3);
+                      setState(() {
                       _painter = ArbolPainter(objArbol);
                       arbolDibujado = false;
                     });
                     Navigator.of(context).pop();
+                    }
+
+                    
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
