@@ -10,5 +10,8 @@ int joinModo = 1;
 
 ModeloNodo nodoInicial = ModeloNodo("-1", 1,1,1, "msg");
 
-
+double primerX = -1;
+double primerY = -1;
+List<double> valoresx = [];
+List<double> valoresy = [];
 

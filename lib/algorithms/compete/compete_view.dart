@@ -23,6 +23,7 @@ class _CompeteViewState extends State<CompeteView> {
   int idNode = 1;
   bool isDirected = false;
 
+
   void cambioEstado(int n) {
     setState(() {
       modo = n;
@@ -120,6 +121,14 @@ class _CompeteViewState extends State<CompeteView> {
                                         },
                                       );
                                     } else {
+
+                                      valoresx.add(double.parse(_msgNodox.text));
+                                      valoresy.add(double.parse(_msgNodoy.text));
+                                      if(primerX!=-1 && primerY!=-1){
+                                        primerX = double.parse(_msgNodox.text);
+                                        primerY = double.parse(_msgNodoy.text);
+                                      }
+
                                       vNodo.add(ModeloNodo(
                                           (vNodo.length + 1).toString(),
                                           des.globalPosition.dx,
