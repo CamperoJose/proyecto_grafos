@@ -1,6 +1,0 @@
-framework module open_filex {
-  umbrella header "open_filex-umbrella.h"
-
-  export *
-  module * { export * }
-}

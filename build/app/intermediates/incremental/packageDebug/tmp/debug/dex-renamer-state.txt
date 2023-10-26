@@ -1,4 +1,0 @@
-#Fri Apr 28 00:21:13 BOT 2023
-base.0=/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
-renamed.0=classes.dex
-path.0=classes.dex

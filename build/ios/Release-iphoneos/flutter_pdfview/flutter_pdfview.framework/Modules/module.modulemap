@@ -1,6 +1,0 @@
-framework module flutter_pdfview {
-  umbrella header "flutter_pdfview-umbrella.h"
-
-  export *
-  module * { export * }
-}
