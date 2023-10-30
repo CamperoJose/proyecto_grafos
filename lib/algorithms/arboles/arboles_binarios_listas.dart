@@ -365,18 +365,7 @@ class _ArbolesBinariosScreenListasState
                     String textn =
                         text3Controller.text.split(",").length.toString();
 
-                    if (text1 != textn) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return MyAlertErrorDialog(
-                            title: 'Tamaño de listas no coinciden',
-                            content:
-                                'Tanto la lista In Order como la lista Pre Order deben tener el mismo tamaño.',
-                          );
-                        },
-                      );
-                    }
+                    
 
                     String text3 = text2Controller.text;
                     String text2 = text3Controller.text;
@@ -392,30 +381,19 @@ class _ArbolesBinariosScreenListasState
                         .map((str) => int.parse(str.trim()))
                         .toList();
 
-                    if (list2.toSet().length != list2.length ||
-                        list3.toSet().length != list3.length) {
+                    if (text1 != textn || (list2.toSet().length != list2.length ||
+                        list3.toSet().length != list3.length) || list2.toSet().difference(list3.toSet()).isNotEmpty) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return MyAlertErrorDialog(
-                            title: 'Números repetidos',
+                            title: 'Listas inválidas',
                             content:
-                                'En las listas no deben haber números repetidos.',
+                                'Tomar en cuenta que las listas deben:\n\n- Tener la misma cantidad de elementos \n- No tener elementos repetidos \n- Todos los elementos de la lista in order presentes en pre order',
                           );
                         },
                       );
-                    }
-                    //TODO: VERIFICAR SI TODOS LOS VALORES DE LA LISTA DE list2 ESTÁN EN LA LISTA DE list3:
-                    if (list2.toSet().difference(list3.toSet()).isNotEmpty) {
-                      print("listas no coinciden");
-                      //mostrar mensaje pop up indicando el error, NO ALERT DIALOG:
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Listas no coinciden"),
-                        ),
-                      );
-
-                    } else {
+                    }else {
                       listToTree(selectedOption, list2, list3);
                       setState(() {
                       _painter = ArbolPainter(objArbol);
