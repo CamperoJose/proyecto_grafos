@@ -14,4 +14,3 @@ double primerX = -1;
 double primerY = -1;
 List<double> valoresx = [];
 List<double> valoresy = [];
-
