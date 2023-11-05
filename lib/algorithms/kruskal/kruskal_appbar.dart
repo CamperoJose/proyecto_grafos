@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_grafos/algorithms/jhonson.dart';
-import 'package:proyecto_grafos/algorithms/jhonson/jhonson2.dart';
-import 'package:proyecto_grafos/algorithms/jhonson/jhonson_view.dart';
+import 'package:proyecto_grafos/algorithms/kruskal/kruskal_view.dart';
+import 'package:proyecto_grafos/algorithms/kruskal/logica_kruskal.dart';
 import 'package:proyecto_grafos/matriz.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -44,7 +43,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           itemBuilder: (BuildContext context) {
-            return {'Calcular Kruskal'}.map((String choice) {
+            return {'Minimizar Kruskal', 'Maximizar Kruskal'}
+                .map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
                 child: Text(choice),
@@ -52,12 +52,65 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             }).toList();
           },
           onSelected: (String choice) {
-            if (choice == 'Calcular Kruskal') {
-              print("logica de calculo de kruskal");
+            if (choice == 'Minimizar Kruskal') {
+              creaKruskal(2);
+              opKruskal = 1;
+
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => KruskalView()));
+            }
+            if (choice == 'Maximizar Kruskal') {
+              opKruskal = 2;
+              creaKruskal(1);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => KruskalView()));
             }
           },
         ),
       ],
     );
+  }
+
+  creaKruskal(int mxmn) {
+    String sumaAlgor = "";
+    sumaKruskal = 0;
+
+    int n = values.length + 1;
+    List<List<String>> matrizAdyacencia =
+        List.generate(n, (i) => List<String>.filled(n, '-1'));
+
+    matrizAdyacencia[0][0] = " ";
+
+    print(matrizAdyacencia);
+
+    for (int i = 1; i <= values.length; i++) {
+      matrizAdyacencia[0][i] = values[i - 1];
+      matrizAdyacencia[i][0] = values[i - 1];
+    }
+
+    print(matrizAdyacencia);
+
+    for (int i = 1; i <= values.length; i++) {
+      for (int j = 1; j <= values.length; j++) {
+        matrizAdyacencia[i][j] = matrixArists[i - 1][j - 1].toString();
+      }
+    }
+
+    print(matrizAdyacencia);
+
+    List<CaminoKrus> puentes = matrizToLista(matrizAdyacencia);
+    List<String> vertices = matrizAdyacencia[0].sublist(1);
+    Kruskal grafo = Kruskal(vertices, puentes);
+    List<CaminoKrus> kruskal = grafo.kruskalMax();
+    if (mxmn != 1) {
+      kruskal = grafo.kruskalMin();
+    }
+    aux = []; // Lista de puentes a pintar
+    for (var puente in kruskal) {
+      aux.add([puente.inicio, puente.destino]);
+      sumaKruskal += puente.peso;
+    }
+    sumaAlgor = "Suma: $sumaKruskal";
+    print(aux);
   }
 }

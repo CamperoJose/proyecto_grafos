@@ -22,3 +22,7 @@ List<List<int>> matrixArists = [];
 List<List<int>> matrizHolguras = [];
 
 List<String> longestPath = [];
+
+List<List<String>> aux = []; // Lista de puentes a pintar en kruskal;
+int sumaKruskal = 0;
+int opKruskal = -1;
