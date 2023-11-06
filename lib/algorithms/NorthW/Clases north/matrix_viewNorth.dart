@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
+
+import '../norwest.dart';
 
 void main() => runApp(MaterialApp(home: MatrixView()));
 
@@ -11,6 +15,8 @@ class MatrixView extends StatelessWidget {
   List<List<TextEditingController>> textControllers = List.generate(values.length, (_) => List.filled(values.length, TextEditingController()));
   List<List<int>> matrix = List.generate(values.length, (_) => List.filled(values.length, 0));
   List<String> letras= values;
+  List<String> rows = [];  // Definir la lista de filas aquí
+  List<String> columns = [];  // Definir la lista de columnas aquí
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +73,8 @@ class MatrixView extends StatelessWidget {
             },
             onSelected: (String choice) {
               if (choice == 'Minimizar') {
-                print('Matriz reducida:$values');
-                _showMinimizeAlertDialog(context, values);
+                //print('Matriz reducida:$matrixArists');
+                _showMinimizeAlertDialog(context, values,matrixArists);
               }
             },
           ),
@@ -133,6 +139,8 @@ class _MatrixWidget extends StatelessWidget {
         .where((row) => row.any((value) => value != 0))
         .map((row) => row.where((value) => value != 0).toList())
         .toList();
+
+
 
 
 
@@ -231,7 +239,9 @@ class _TableCell extends StatelessWidget {
     );
   }
 }
-void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
+void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<List<int>> matrixFull) {
+  Norwest northwest = Norwest();
+    // Definir la lista de columnas aquí
   if (values.length % 2 != 0) {
     AlertDialog errorDialog = AlertDialog(
       title: Text('Error'),
@@ -263,7 +273,19 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
     content: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (int i = 0; i < values.length ; i++)
+        for (int i = 0; i < values.length; i += 2) // Recorre los valores pares
+          Row(
+            children: [
+              Text('${values[i]} => '),
+              Expanded(
+                child: TextField(
+                  controller: textControllers[i],
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+        for (int i = 1; i < values.length; i += 2) // Recorre los valores impares
           Row(
             children: [
               Text('${values[i]} => '),
@@ -277,24 +299,76 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
           ),
       ],
     ),
-
     actions: <Widget>[
       TextButton(
         child: Text('Calcular'),
         onPressed: () {
-          for (TextEditingController controller in textControllers) {
-            String text = controller.text;
-            int value = int.tryParse(text) ?? 0; // Si no se puede convertir a entero, se establece en 0
-            costos.add(value);
-          }
-          print('Valores enteros: $costos');
-          // Aquí puedes acceder a los valores ingresados en los campos de texto y realizar el cálculo necesario.
-          for (int i = 0; i < values.length ; i++) {
+          List<int> oferta = []; // Lista para almacenar la oferta
+          List<int> demanda = []; // Lista para almacenar la demanda
+          //print('$textControllers');
+
+          for (int i = 0; i < values.length; i += 2) {
             String startNode = values[i];
             String endNode = textControllers[i].text;
-            // Realiza el cálculo o procesamiento de los datos según tus necesidades.
-            // Puedes mostrar los resultados en otro AlertDialog o de la manera que desees.
+            int value = int.tryParse(endNode) ?? 0; // Valor ingresado en el campo de texto
+            oferta.add(value); // Es oferta
           }
+
+          for (int i = 1; i < values.length; i += 2) {
+            String startNode = values[i];
+            String endNode = textControllers[i].text;
+            int value = int.tryParse(endNode) ?? 0; // Valor ingresado en el campo de texto
+            demanda.add(value); // Es demanda
+          }
+
+          // Ahora tienes las listas 'oferta' y 'demanda' con los valores correspondientes.
+          //print('Oferta: $oferta');
+         // print('Demanda: $demanda');
+
+          List<String> ofertaS = oferta.map((value) => value.toString()).toList();
+          List<String> demandaS = demanda.map((value) => value.toString()).toList();
+
+
+          print('Matriz: $matrixFull');
+          List<List<String>> matrixAristsStrings = matrixFull
+              .map((row) => row.map((value) => value.toString()).toList())
+              .toList();
+
+          var resultado = northwest.calcNor(matrixAristsStrings, ofertaS, demandaS);
+          int costoTotal = resultado[0];
+          List<List<String>> matrizResultante = resultado[1];
+
+          AlertDialog resultDialog = AlertDialog(
+            title: Text('Resultado de Norwest'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: matrizResultante.map((row) {
+                return Row(
+                  children: row.map((cell) {
+                    return Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Text('$cell\t'),
+                    );
+                  }).toList(),
+                );
+              }).toList(),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Cerrar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return resultDialog;
+            },
+          );
+
         },
       ),
       TextButton(
@@ -314,18 +388,9 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values) {
   );
 }
 
-List<Widget> _generateDistributiveList(List<String> values) {
-  List<Widget> distributiveList = [];
-  int halfLength = values.length ~/ 2;
 
-  for (int i = 0; i < halfLength; i++) {
-    for (int j = halfLength; j < values.length; j++) {
-      distributiveList.add(Text('${values[i]} => ${values[j]}'));
-    }
-  }
 
-  return distributiveList;
-}
+
 
 
 
