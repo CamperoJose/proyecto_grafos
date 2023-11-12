@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_grafos/algorithms/kruskal/kruskal_minimo.dart';
 import 'package:proyecto_grafos/algorithms/kruskal/kruskal_view.dart';
 import 'package:proyecto_grafos/algorithms/kruskal/logica_kruskal.dart';
 import 'package:proyecto_grafos/matriz.dart';
@@ -53,11 +54,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
           onSelected: (String choice) {
             if (choice == 'Minimizar Kruskal') {
-              creaKruskal(2);
+              //creaKruskal(2);
               opKruskal = 1;
+              List<List<dynamic>> edges = [];
+
+              for (int i = 0; i < matrixArists.length; i++) {
+                for (int j = 0; j < matrixArists.length; j++) {
+                  if (matrixArists[i][j] != 0) {
+                    edges.add([values[i], values[j], matrixArists[i][j]]);
+                  }
+                }
+              }
+              print(edges);
+
+              aux = runKruskalAlgorithm(edges, values);
 
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => KruskalView()));
+                   MaterialPageRoute(builder: (context) => KruskalView()));
             }
             if (choice == 'Maximizar Kruskal') {
               opKruskal = 2;
