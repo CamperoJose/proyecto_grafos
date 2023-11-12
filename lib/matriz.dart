@@ -26,3 +26,12 @@ List<String> longestPath = [];
 List<List<String>> aux = []; // Lista de puentes a pintar en kruskal;
 int sumaKruskal = 0;
 int opKruskal = -1;
+
+//para dijkstra:
+
+List<List<String>> auxDijkstra = []; // Lista de puentes a pintar en kruskal;
+int sumaDijkstra = 0;
+int opDijkstra = -1;
+
+String varInicio = "";
+String varFin = "";
