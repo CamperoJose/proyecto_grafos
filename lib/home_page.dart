@@ -3,9 +3,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:proyecto_grafos/algorithms/arboles/arboles_binarios.dart';
 import 'package:proyecto_grafos/algorithms/arboles/arboles_binarios_listas.dart';
 import 'package:proyecto_grafos/algorithms/compete/compete_view.dart';
+import 'package:proyecto_grafos/algorithms/dijkstra/dijkstra_home.dart';
 import 'package:proyecto_grafos/algorithms/jhonson/home_jhonson.dart';
 import 'package:proyecto_grafos/algorithms/kruskal/kruskal_home.dart';
-import 'package:proyecto_grafos/algorithms/kruskal/kruskal_view.dart';
 import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_manual_view.dart';
 import 'package:proyecto_grafos/algorithms/ordenamiento/ordenamiento_view.dart';
 import 'package:proyecto_grafos/home.dart';
@@ -481,6 +481,25 @@ class _HomePageState extends State<HomePage>
                     child: Text('Algoritmo de Kruskal', style: TextStyle(color: Colors.black),),
                     style: ElevatedButton.styleFrom(
                       primary: Color.fromARGB(255, 255, 255, 255),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: 20,),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeDijkstra()));
+                    },
+                    child: Text('Algoritmo de Dijkstra', style: TextStyle(color: Colors.black),),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 187, 251, 60),
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
