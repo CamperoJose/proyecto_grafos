@@ -69,6 +69,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               aux = runKruskalAlgorithm(edges, values);
 
+              //calculo de sumatoria con aux:
+              sumaKruskal = 0;
+              for (int i = 0; i < aux.length; i++) {
+                //posicion de values:
+                int pos1 = values.indexOf(aux[i][0]);
+                int pos2 = values.indexOf(aux[i][1]);
+                sumaKruskal =sumaKruskal+ matrixArists[pos1][pos2];
+              }
+
               Navigator.push(context,
                    MaterialPageRoute(builder: (context) => KruskalView()));
             }
