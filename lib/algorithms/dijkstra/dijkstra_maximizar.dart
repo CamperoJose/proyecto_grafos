@@ -1,48 +1,71 @@
-class DisjointSet {
-  Map<String, String> parent = {};
+import 'dart:collection';
 
-  void makeSet(List<String> nodes) {
-    for (String node in nodes) {
-      parent[node] = node;
+class Graph {
+  Map<String, Map<String, int>> adjList = {};
+
+  void addEdge(String src, String dest, int weight) {
+    if (!adjList.containsKey(src)) {
+      adjList[src] = {};
+    }
+    if (!adjList.containsKey(dest)) {
+      adjList[dest] = {};
+    }
+    adjList[src]![dest] = weight;
+  }
+
+  List<String> topologicalSort() {
+    Set<String> visited = Set<String>();
+    List<String> stack = [];
+    for (String node in adjList.keys) {
+      topologicalSortUtil(node, visited, stack);
+    }
+    return stack;
+  }
+
+  void topologicalSortUtil(String v, Set<String> visited, List<String> stack) {
+    if (!visited.contains(v)) {
+      visited.add(v);
+      adjList[v]?.forEach((u, weight) {
+        topologicalSortUtil(u, visited, stack);
+      });
+      stack.insert(0, v);
     }
   }
 
-  String find(String k) {
-    if (parent[k] == k) {
-      return k;
-    }
-    return find(parent[k]!);
-  }
+  List<List<String>> longestPath(String start, String end) {
+    var order = topologicalSort();
+    Map<String, int> distances = {};
+    Map<String, String?> previous = {};
 
-  void union(String a, String b) {
-    String x = find(a);
-    String y = find(b);
-    parent[x] = y;
+    for (String node in adjList.keys) {
+      distances[node] = double.minPositive.toInt();
+      previous[node] = null;
+    }
+
+    distances[start] = 0;
+
+    for (String node in order) {
+      if (node == start || distances[node] != double.minPositive.toInt()) {
+        adjList[node]?.forEach((next, weight) {
+          int totalDistance = distances[node]! + weight;
+          if (totalDistance > distances[next]!) {
+            distances[next] = totalDistance;
+            previous[next] = node;
+          }
+        });
+      }
+    }
+
+    if (distances[end] == double.minPositive.toInt()) {
+      // No hay camino desde el inicio hasta el final
+      return [];
+    }
+
+    List<List<String>> path = [];
+    for (String at = end; previous[at] != null; at = previous[at]!) {
+      path.insert(0, [previous[at]!, at]);
+    }
+
+    return path;
   }
 }
-
-List<List<String>> runKruskalAlgorithmMax(List<List<dynamic>> edges, List<String> nodes) {
-  List<List<String>> MST = [];
-  DisjointSet ds = DisjointSet();
-  ds.makeSet(nodes);
-
-  int index = 0;
-  // Ordena los bordes disminuyendo el peso
-  edges.sort((a, b) => b[2].compareTo(a[2]));
-
-  while (MST.length != nodes.length - 1) {
-    List<dynamic> edge = edges[index];
-    index++;
-
-    String x = ds.find(edge[0]);
-    String y = ds.find(edge[1]);
-
-    if (x != y) {
-      MST.add([edge[0], edge[1]]);
-      ds.union(x, y);
-    }
-  }
-
-  return MST;
-}
-

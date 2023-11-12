@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_grafos/algorithms/dijkstra/selection.dart';
+import 'package:proyecto_grafos/algorithms/dijkstra/selection_max.dart';
+import 'package:proyecto_grafos/algorithms/dijkstra/selection_min.dart';
 import 'package:proyecto_grafos/matriz.dart';
 // Importa otros paquetes si son necesarios
 
@@ -84,7 +85,26 @@ class _CustomAppBarState extends State<CustomAppBar> {
               );
 
             } else if (choice == 'Maximizar Dijkstra') {
-              // ... tu lógica para Maximizar Kruskal aquí ...
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SelectionDialog2(
+                    values: values,
+                    selectedStartValue:
+                        selectedStartValue, // Valor de inicio previamente seleccionado
+                    selectedEndValue:
+                        selectedEndValue, // Valor de final previamente seleccionado
+                    onSelected: (String? newStartValue, String? newEndValue) {
+                      setState(() {
+                        selectedStartValue =
+                            newStartValue; // Actualiza el valor de inicio seleccionado
+                        selectedEndValue =
+                            newEndValue; // Actualiza el valor de final seleccionado
+                      });
+                    },
+                  );
+                },
+              );
             } 
           },
         ),

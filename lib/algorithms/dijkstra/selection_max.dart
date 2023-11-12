@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_grafos/algorithms/dijkstra/dijkstra_minimo.dart';
+import 'package:proyecto_grafos/algorithms/dijkstra/dijkstra_maximizar.dart';
 import 'package:proyecto_grafos/algorithms/dijkstra/dijkstra_view.dart';
 import 'package:proyecto_grafos/matriz.dart';
 
-class SelectionDialog extends StatefulWidget {
+class SelectionDialog2 extends StatefulWidget {
   final List<String> values;
   final String? selectedStartValue;
   final String? selectedEndValue;
   final Function(String?, String?) onSelected;
 
-  SelectionDialog({
+  SelectionDialog2({
     Key? key,
     required this.values,
     this.selectedStartValue,
@@ -21,7 +21,7 @@ class SelectionDialog extends StatefulWidget {
   _SelectionDialogState createState() => _SelectionDialogState();
 }
 
-class _SelectionDialogState extends State<SelectionDialog> {
+class _SelectionDialogState extends State<SelectionDialog2> {
   String? localSelectedStartValue;
   String? localSelectedEndValue;
 
@@ -40,7 +40,9 @@ class _SelectionDialogState extends State<SelectionDialog> {
     return AlertDialog(
       title: Text(
         'Selecciona un valor de Inicio y otro de Final',
-        style: TextStyle(color: deepPurpleColor, fontWeight: FontWeight.bold), // Uso del color morado oscuro
+        style: TextStyle(
+            color: deepPurpleColor,
+            fontWeight: FontWeight.bold), // Uso del color morado oscuro
       ),
       content: Row(
         children: [
@@ -68,7 +70,6 @@ class _SelectionDialogState extends State<SelectionDialog> {
               ),
             ),
           ),
-
           SizedBox(
             width: 70,
           ),
@@ -114,33 +115,34 @@ class _SelectionDialogState extends State<SelectionDialog> {
             print("localSelectedStartValue: $localSelectedStartValue");
             print("localSelectedEndValue: $localSelectedEndValue");
 
-              opKruskal = 1;
-              Graph g = Graph();
+            opKruskal = 2;
+            Graph g = Graph();
+            auxDijkstra = [];
 
-              for (int i = 0; i < matrixArists.length; i++) {
-                for (int j = 0; j < matrixArists.length; j++) {
-                  if (matrixArists[i][j] != 0) {
-                    g.addEdge(values[i], values[j], matrixArists[i][j]);
-                  }
+            for (int i = 0; i < matrixArists.length; i++) {
+              for (int j = 0; j < matrixArists.length; j++) {
+                if (matrixArists[i][j] != 0) {
+                  g.addEdge(values[i], values[j], matrixArists[i][j]);
                 }
               }
+            }
 
-              auxDijkstra = g.dijkstra(localSelectedStartValue!, localSelectedEndValue!);
+            auxDijkstra =
+                g.longestPath(localSelectedStartValue!, localSelectedEndValue!);
 
-              //calculo de sumatoria con aux:
-              sumaDijkstra = 0;
-              for (int i = 0; i < auxDijkstra.length; i++) {
-                //posicion de values:
-                int pos1 = values.indexOf(auxDijkstra[i][0]);
-                int pos2 = values.indexOf(auxDijkstra[i][1]);
-                sumaDijkstra = sumaDijkstra + matrixArists[pos1][pos2];
-              }
+            //calculo de sumatoria con aux:
+            sumaDijkstra = 0;
+            for (int i = 0; i < auxDijkstra.length; i++) {
+              //posicion de values:
+              int pos1 = values.indexOf(auxDijkstra[i][0]);
+              int pos2 = values.indexOf(auxDijkstra[i][1]);
+              sumaDijkstra = sumaDijkstra + matrixArists[pos1][pos2];
+            }
 
-              print("auxDijkstra: $auxDijkstra");
+            print("auxDijkstra: $auxDijkstra");
 
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DijkstraView()));
-
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => DijkstraView()));
           },
         ),
       ],
