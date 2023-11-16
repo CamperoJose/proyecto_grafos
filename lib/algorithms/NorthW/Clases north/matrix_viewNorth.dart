@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
 
-import '../norwest.dart';
+import '../norwnew.dart';
 
 void main() => runApp(MaterialApp(home: MatrixView()));
 
@@ -20,6 +20,8 @@ class MatrixView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
 
     List<String> rows = [];
     List<String> columns = [];
@@ -47,6 +49,8 @@ class MatrixView extends StatelessWidget {
         .where((row) => row.any((value) => value != 0))
         .map((row) => row.where((value) => value != 0).toList())
         .toList();
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Matrices de Adyacencia'),
@@ -73,7 +77,7 @@ class MatrixView extends StatelessWidget {
             },
             onSelected: (String choice) {
               if (choice == 'Minimizar') {
-                //print('Matriz reducida:$matrixArists');
+
                 _showMinimizeAlertDialog(context, values,matrixArists);
               }
             },
@@ -241,30 +245,6 @@ class _TableCell extends StatelessWidget {
 }
 void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<List<int>> matrixFull) {
   Norwest northwest = Norwest();
-    // Definir la lista de columnas aquí
-  if (values.length % 2 != 0) {
-    AlertDialog errorDialog = AlertDialog(
-      title: Text('Error'),
-      content: Text('La lista no tiene un número par de elementos.'),
-      actions: <Widget>[
-        TextButton(
-          child: Text('Cerrar'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return errorDialog;
-      },
-    );
-    return;
-  }
-
   List<TextEditingController> textControllers = List.generate(values.length, (index) => TextEditingController());
   List<int> costos = [];
 
@@ -273,30 +253,35 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
     content: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (int i = 0; i < values.length; i += 2) // Recorre los valores pares
-          Row(
-            children: [
-              Text('${values[i]} => '),
-              Expanded(
-                child: TextField(
-                  controller: textControllers[i],
-                  keyboardType: TextInputType.number,
+        // (oferta)
+        for (int i = 0; i < matrixArists.length; i++)
+          if (matrixArists[i].any((value) => value != 0))
+            Row(
+              children: [
+                Text('${values[i]} => '),
+                Expanded(
+                  child: TextField(
+                    controller: textControllers[i],
+                    keyboardType: TextInputType.number,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        for (int i = 1; i < values.length; i += 2) // Recorre los valores impares
-          Row(
-            children: [
-              Text('${values[i]} => '),
-              Expanded(
-                child: TextField(
-                  controller: textControllers[i],
-                  keyboardType: TextInputType.number,
+              ],
+            ),
+
+        // (demanda)
+        for (int col = 0; col < matrixArists[0].length; col++)
+          if (matrixArists.any((row) => row[col] != 0))
+            Row(
+              children: [
+                Text('${values[col]} => '),
+                Expanded(
+                  child: TextField(
+                    controller: textControllers[col],
+                    keyboardType: TextInputType.number,
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
       ],
     ),
     actions: <Widget>[
@@ -307,51 +292,96 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
           List<int> demanda = []; // Lista para almacenar la demanda
           //print('$textControllers');
 
-          for (int i = 0; i < values.length; i += 2) {
-            String startNode = values[i];
-            String endNode = textControllers[i].text;
-            int value = int.tryParse(endNode) ?? 0; // Valor ingresado en el campo de texto
-            oferta.add(value); // Es oferta
-          }
-
-          for (int i = 1; i < values.length; i += 2) {
-            String startNode = values[i];
-            String endNode = textControllers[i].text;
-            int value = int.tryParse(endNode) ?? 0; // Valor ingresado en el campo de texto
-            demanda.add(value); // Es demanda
-          }
+          for (int col = 0; col < matrixArists[0].length; col++)
+            if (matrixArists.any((row) => row[col] != 0)) {
+              String endNode = textControllers[col].text;
+              int value = int.tryParse(endNode) ?? 0;
+              demanda.add(value);
+            }
+          for (int i = 0; i < matrixArists.length; i++)
+            if (matrixArists[i].any((value) => value != 0)) {
+              String endNode = textControllers[i].text;
+              int value = int.tryParse(endNode) ??
+                  0; // Valor ingresado en el campo de texto
+              oferta.add(value); // Es demanda
+            }
 
           // Ahora tienes las listas 'oferta' y 'demanda' con los valores correspondientes.
-          //print('Oferta: $oferta');
-         // print('Demanda: $demanda');
+          print('Oferta: $oferta');
+          print('Demanda: $demanda');
 
-          List<String> ofertaS = oferta.map((value) => value.toString()).toList();
-          List<String> demandaS = demanda.map((value) => value.toString()).toList();
+          //List<String> ofertaS = oferta.map((value) => value.toString()).toList();
+          //List<String> demandaS = demanda.map((value) => value.toString()).toList();
+
+          // Filtrar la matriz para eliminar los elementos iguales a 0
+          /*List<List<int>> matrizFiltrada = matrixFull.map((fila) {
+            return fila.where((elemento) => elemento != 0).toList();
+          }).toList();
+
+       // Imprimir la matriz original y la matriz filtrada
+          print('Matriz Original: $matrixFull');
+          print('Matriz Filtrada: $matrizFiltrada');*/
 
 
-          print('Matriz: $matrixFull');
-          List<List<String>> matrixAristsStrings = matrixFull
+          /*List<List<String>> matrixAristsStrings = matrixFull
               .map((row) => row.map((value) => value.toString()).toList())
-              .toList();
+              .toList();*/
+          //print('Matriz Original: $matrixFull');
 
-          var resultado = northwest.calcNor(matrixAristsStrings, ofertaS, demandaS);
-          int costoTotal = resultado[0];
-          List<List<String>> matrizResultante = resultado[1];
+
+
+          List<String> rows = [];
+          List<String> columns = [];
+          List<List<int>> reducedMatrix = [];
+          // Encuentra las filas con datos no nulos
+          for (int row = 0; row < matrixFull.length; row++) {
+            bool hasData = matrixFull[row].any((value) => value != 0);
+            if (hasData) {
+              rows.add(values[row]);
+            }
+          }
+          // Encuentra las columnas con datos no nulos
+          for (int col = 0; col < matrixFull[0].length; col++) {
+            bool hasData = matrixFull.any((row) => row[col] != 0);
+            if (hasData) {
+              columns.add(values[col]);
+            }
+          }
+          // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
+          reducedMatrix = matrixFull
+              .where((row) => row.any((value) => value != 0))
+              .map((row) => row.where((value) => value != 0).toList())
+              .toList();
+          print('Matriz Original: $reducedMatrix');
+
+          ResultadoNorwest resultado = northwest.calcNorwest(reducedMatrix, oferta, demanda);
+          List<List<int>> matrizResultado = resultado.matriz;
+          int sumatoria = resultado.sumatoria;
+          //print('Matriz: $resultado');
 
           AlertDialog resultDialog = AlertDialog(
             title: Text('Resultado de Norwest'),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: matrizResultante.map((row) {
-                return Row(
-                  children: row.map((cell) {
-                    return Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Text('$cell\t'),
-                    );
-                  }).toList(),
-                );
-              }).toList(),
+              children: [
+                // Mostrar la matriz resultante
+                ...matrizResultado.map((row) {
+                  return Row(
+                    children: row.map((cell) {
+                      return Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Text('$cell\t'),
+                      );
+                    }).toList(),
+                  );
+                }).toList(),
+
+                // Mostrar el costo total
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text('Costo Total: $sumatoria'),
+                ),
+              ],
             ),
             actions: <Widget>[
               TextButton(
@@ -362,6 +392,7 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
               ),
             ],
           );
+;
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -387,15 +418,3 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
     },
   );
 }
-
-
-
-
-
-
-
-//edicion 1
-
-
-
-
