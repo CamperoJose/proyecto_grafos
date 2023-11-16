@@ -4,39 +4,36 @@ class Norwest {
   calcNor(List<List<String>> mat, List<String> disp, List<String> dem,
       {bool alfa = false, int? valmen, List<int>? posval}) {
     int s = 0;
-    List<int> esq = [1, 1];
+    List<int> esq = [0, 0];
     List<List<String>> teta =
     List.generate(disp.length, (_) => List.filled(dem.length, ""));
     List<String> dispaux = disp.toList();
     List<String> demaux = dem.toList();
 
-    //print('Oferta: $disp');
-    //print('Demanda: $dem');
-
     while (esq[0] <= disp.length && esq[1] <= dem.length) {
-      int valdisp = int.parse(dispaux[esq[0] - 1]);
-      int valdem = int.parse(demaux[esq[1] - 1]);
+      int valdisp = int.parse(dispaux[esq[0]]);
+      int valdem = int.parse(demaux[esq[1]-1]);
       if (valdem == valdisp) {
-        teta[esq[0] - 1][esq[1] - 1] = valdisp.toString();
+        teta[esq[0]][esq[1]] = valdisp.toString();
         valdisp = 0;
         valdem = 0;
-        dispaux[esq[0] - 1] = valdisp.toString();
-        demaux[esq[1] - 1] = valdem.toString();
+        dispaux[esq[0]] = valdisp.toString();
+        demaux[esq[1]] = valdem.toString();
         esq[1]++;
         esq[0]++;
       } else if (valdisp > valdem) {
-        teta[esq[0] - 1][esq[1] - 1] = valdem.toString();
+        teta[esq[0]][esq[1]] = valdem.toString();
         valdisp -= valdem;
         valdem = 0;
-        dispaux[esq[0] - 1] = valdisp.toString();
-        demaux[esq[1] - 1] = valdem.toString();
+        dispaux[esq[0]] = valdisp.toString();
+        demaux[esq[1]] = valdem.toString();
         esq[1]++;
       } else if (valdisp < valdem) {
-        teta[esq[0] - 1][esq[1] - 1] = valdisp.toString();
+        teta[esq[0]][esq[1]] = valdisp.toString();
         valdem -= valdisp;
         valdisp = 0;
-        dispaux[esq[0] - 1] = valdisp.toString();
-        demaux[esq[1] - 1] = valdem.toString();
+        dispaux[esq[0]] = valdisp.toString();
+        demaux[esq[1]] = valdem.toString();
         esq[0]++;
       }
     }
@@ -46,7 +43,7 @@ class Norwest {
       teta = cambioTeta(teta, posval[0], posval[1]);
       teta = nuevoTeta(teta, sacaAlfa(teta));
     }
-    //print(teta);
+    print(teta);
 
     for (int i = 0; i < teta.length; i++) {
       for (int j = 0; j < teta[0].length; j++) {
@@ -89,7 +86,7 @@ class Norwest {
     //sacaMenMat(zjcj);
 
     var men = sacaMenMat(zjcj);
-    //print(s);
+    print(s);
     if (men[0] < 0 && alfa == false) {
       return calcNor(mat, disp, dem,
           alfa: true, valmen: men[0], posval: men[1]);
