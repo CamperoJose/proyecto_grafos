@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/modelo_aristaN.dart';
 
-import 'package:proyecto_grafos/algorithms/NorthW/algoritmo_north.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/norwest.dart';
 import 'Clases north/matriz.dart';
 import 'Clases north/modelo_nodoN.dart';
 

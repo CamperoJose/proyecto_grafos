@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
 
+import '../nornewmin.dart';
 import '../norwnew.dart';
+import '../nornewmax.dart';
 
 void main() => runApp(MaterialApp(home: MatrixView()));
 
@@ -120,6 +122,7 @@ class _MatrixWidget extends StatelessWidget {
     List<String> rows = [];
     List<String> columns = [];
     List<List<int>> reducedMatrix = [];
+    List<List<int>> reducedMatrixNegativo = [];
 
 
     // Encuentra las filas con datos no nulos
@@ -244,7 +247,8 @@ class _TableCell extends StatelessWidget {
   }
 }
 void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<List<int>> matrixFull) {
-  Norwest northwest = Norwest();
+  NorwestMin northwest = NorwestMin();
+  NorwestMax northwestMax = NorwestMax();
   List<TextEditingController> textControllers = List.generate(values.length, (index) => TextEditingController());
   List<int> costos = [];
 
@@ -286,7 +290,7 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
     ),
     actions: <Widget>[
       TextButton(
-        child: Text('Calcular'),
+        child: Text('CalcularMin'),
         onPressed: () {
           List<int> oferta = []; // Lista para almacenar la oferta
           List<int> demanda = []; // Lista para almacenar la demanda
@@ -309,26 +313,6 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
           // Ahora tienes las listas 'oferta' y 'demanda' con los valores correspondientes.
           print('Oferta: $oferta');
           print('Demanda: $demanda');
-
-          //List<String> ofertaS = oferta.map((value) => value.toString()).toList();
-          //List<String> demandaS = demanda.map((value) => value.toString()).toList();
-
-          // Filtrar la matriz para eliminar los elementos iguales a 0
-          /*List<List<int>> matrizFiltrada = matrixFull.map((fila) {
-            return fila.where((elemento) => elemento != 0).toList();
-          }).toList();
-
-       // Imprimir la matriz original y la matriz filtrada
-          print('Matriz Original: $matrixFull');
-          print('Matriz Filtrada: $matrizFiltrada');*/
-
-
-          /*List<List<String>> matrixAristsStrings = matrixFull
-              .map((row) => row.map((value) => value.toString()).toList())
-              .toList();*/
-          //print('Matriz Original: $matrixFull');
-
-
 
           List<String> rows = [];
           List<String> columns = [];
@@ -354,7 +338,35 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
               .toList();
           print('Matriz Original: $reducedMatrix');
 
-          ResultadoNorwest resultado = northwest.calcNorwest(reducedMatrix, oferta, demanda);
+          int sumaOferta = oferta.reduce((a, b) => a + b);
+          int sumaDemanda = demanda.reduce((a, b) => a + b);
+
+          if (sumaOferta != sumaDemanda) {
+            // Mostrar un mensaje de error o tomar la acción adecuada
+            AlertDialog errorDialog = AlertDialog(
+              title: Text('Error'),
+              content: Text('La suma de oferta y demanda no es igual.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Cerrar'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return errorDialog;
+              },
+            );
+            return; // Detener la ejecución
+          }
+
+
+          ResultadoNorwestMin resultado = northwest.calcNorwestMin(reducedMatrix, oferta, demanda);
           List<List<int>> matrizResultado = resultado.matriz;
           int sumatoria = resultado.sumatoria;
           //print('Matriz: $resultado');
@@ -403,6 +415,128 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
         },
       ),
       TextButton(
+        child: Text('CalcularMax'),
+        onPressed: () {
+          List<int> oferta = []; // Lista para almacenar la oferta
+          List<int> demanda = []; // Lista para almacenar la demanda
+
+
+          for (int col = 0; col < matrixArists[0].length; col++)
+            if (matrixArists.any((row) => row[col] != 0)) {
+              String endNode = textControllers[col].text;
+              int value = int.tryParse(endNode) ?? 0;
+              demanda.add(value);
+            }
+          for (int i = 0; i < matrixArists.length; i++)
+            if (matrixArists[i].any((value) => value != 0)) {
+              String endNode = textControllers[i].text;
+              int value = int.tryParse(endNode) ??
+                  0; // Valor ingresado en el campo de texto
+              oferta.add(value); // Es demanda
+            }
+
+          // Ahora tienes las listas 'oferta' y 'demanda' con los valores correspondientes.
+          print('Oferta: $oferta');
+          print('Demanda: $demanda');
+
+          List<String> rows = [];
+          List<String> columns = [];
+          List<List<int>> reducedMatrix = [];
+          // Encuentra las filas con datos no nulos
+          for (int row = 0; row < matrixFull.length; row++) {
+            bool hasData = matrixFull[row].any((value) => value != 0);
+            if (hasData) {
+              rows.add(values[row]);
+            }
+          }
+          // Encuentra las columnas con datos no nulos
+          for (int col = 0; col < matrixFull[0].length; col++) {
+            bool hasData = matrixFull.any((row) => row[col] != 0);
+            if (hasData) {
+              columns.add(values[col]);
+            }
+          }
+          // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
+          reducedMatrix = matrixFull
+              .where((row) => row.any((value) => value != 0))
+              .map((row) => row.where((value) => value != 0).toList())
+              .toList();
+          print('Matriz Original: $reducedMatrix');
+
+          int sumaOferta = oferta.reduce((a, b) => a + b);
+          int sumaDemanda = demanda.reduce((a, b) => a + b);
+
+          if (sumaOferta != sumaDemanda) {
+            // Mostrar un mensaje de error o tomar la acción adecuada
+            AlertDialog errorDialog = AlertDialog(
+              title: Text('Error'),
+              content: Text('La suma de oferta y demanda no es igual.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Cerrar'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return errorDialog;
+              },
+            );
+            return; // Detener la ejecución
+          }
+          ResultadoMax resultadomax = northwestMax.calcNorwestMax(reducedMatrix, oferta, demanda);
+          List<List<int>> matrizResultado = resultadomax.matriz;
+          int sumatoria = resultadomax.sumatoria;
+          //print('Matriz: $resultado');
+
+          AlertDialog resultDialog = AlertDialog(
+            title: Text('Resultado de Norwest'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Mostrar la matriz resultante
+                ...matrizResultado.map((row) {
+                  return Row(
+                    children: row.map((cell) {
+                      return Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Text('$cell\t'),
+                      );
+                    }).toList(),
+                  );
+                }).toList(),
+
+                // Mostrar el costo total
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text('Costo Total: $sumatoria'),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Cerrar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+          ;
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return resultDialog;
+            },
+          );
+
+        },
+      ),
+      TextButton(
         child: Text('Cerrar'),
         onPressed: () {
           Navigator.of(context).pop();
@@ -418,3 +552,8 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
     },
   );
 }
+
+
+
+
+
