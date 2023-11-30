@@ -1,0 +1,23 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Products/Debug/syncfusion_pdfviewer_macos/syncfusion_pdfviewer_macos.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Intermediates.noindex/Pods.build/Debug/syncfusion_pdfviewer_macos.build/unextended-module.modulemap",
+    }]
+    },
+    {
+    'type': 'directory',
+    'name': "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Products/Debug/syncfusion_pdfviewer_macos/syncfusion_pdfviewer_macos.framework/Headers"
+    'contents': [{
+      'type': 'file',
+      'name': "syncfusion_pdfviewer_macos-Swift.h",
+      'external-contents': "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Intermediates.noindex/Pods.build/Debug/syncfusion_pdfviewer_macos.build/unextended-interface-header.h",
+    }]
+    }]
+}

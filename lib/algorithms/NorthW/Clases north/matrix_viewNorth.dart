@@ -1,32 +1,39 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/all_possible_ways.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/answers.dart';
 import 'package:proyecto_grafos/algorithms/NorthW/Clases%20north/matriz.dart';
-
-import '../norwnew.dart';
+import 'package:proyecto_grafos/algorithms/NorthW/norwest.dart';
 
 void main() => runApp(MaterialApp(home: MatrixView()));
 
 class MatrixView extends StatelessWidget {
-  List<String> textValuesColumns = List.generate(values.length, (index) => "",);
-  List<String> textValuesRow = List.generate(values.length, (index) => "",);
+  List<String> textValuesColumns = List.generate(
+    values.length,
+    (index) => "",
+  );
+  List<String> textValuesRow = List.generate(
+    values.length,
+    (index) => "",
+  );
 
-  List<List<String>> textValues = List.generate(values.length, (_) => List.filled(values.length, ''));
-  List<List<TextEditingController>> textControllers = List.generate(values.length, (_) => List.filled(values.length, TextEditingController()));
-  List<List<int>> matrix = List.generate(values.length, (_) => List.filled(values.length, 0));
-  List<String> letras= values;
-  List<String> rows = [];  // Definir la lista de filas aquí
-  List<String> columns = [];  // Definir la lista de columnas aquí
+  List<List<String>> textValues =
+      List.generate(values.length, (_) => List.filled(values.length, ''));
+  List<List<TextEditingController>> textControllers = List.generate(
+      values.length,
+      (_) => List.filled(values.length, TextEditingController()));
+  List<List<int>> matrix =
+      List.generate(values.length, (_) => List.filled(values.length, 0));
+  List<String> letras = values;
+  List<String> rows = []; // Definir la lista de filas aquí
+  List<String> columns = []; // Definir la lista de columnas aquí
 
   @override
   Widget build(BuildContext context) {
-
-
-
     List<String> rows = [];
     List<String> columns = [];
     List<List<int>> reducedMatrix = [];
-
 
     // Encuentra las filas con datos no nulos
     for (int row = 0; row < matrix.length; row++) {
@@ -41,7 +48,6 @@ class MatrixView extends StatelessWidget {
       bool hasData = matrix.any((row) => row[col] != 0);
       if (hasData) {
         columns.add(values[col]);
-
       }
     }
     // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
@@ -49,7 +55,6 @@ class MatrixView extends StatelessWidget {
         .where((row) => row.any((value) => value != 0))
         .map((row) => row.where((value) => value != 0).toList())
         .toList();
-
 
     return Scaffold(
       appBar: AppBar(
@@ -77,8 +82,7 @@ class MatrixView extends StatelessWidget {
             },
             onSelected: (String choice) {
               if (choice == 'Minimizar') {
-
-                _showMinimizeAlertDialog(context, values,matrixArists);
+                _showMinimizeAlertDialog(context, values, matrixArists);
               }
             },
           ),
@@ -91,7 +95,10 @@ class MatrixView extends StatelessWidget {
           children: [
             _SectionTitle('Matriz de Aristas:'),
             const SizedBox(height: 16),
-            _MatrixWidget(matrix: matrixArists, values: values, textControllers: textControllers),
+            _MatrixWidget(
+                matrix: matrixArists,
+                values: values,
+                textControllers: textControllers),
           ],
         ),
       ),
@@ -104,12 +111,11 @@ class _MatrixWidget extends StatelessWidget {
   final List<String> values;
   final List<List<TextEditingController>> textControllers;
 
-
   _MatrixWidget({
-  required this.matrix,
-  required this.values,
-  required this.textControllers,
-});
+    required this.matrix,
+    required this.values,
+    required this.textControllers,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +126,6 @@ class _MatrixWidget extends StatelessWidget {
     List<String> rows = [];
     List<String> columns = [];
     List<List<int>> reducedMatrix = [];
-
 
     // Encuentra las filas con datos no nulos
     for (int row = 0; row < matrix.length; row++) {
@@ -135,7 +140,6 @@ class _MatrixWidget extends StatelessWidget {
       bool hasData = matrix.any((row) => row[col] != 0);
       if (hasData) {
         columns.add(values[col]);
-
       }
     }
     // Redefine reducedMatrix con solo las filas y columnas con datos no nulos
@@ -143,10 +147,6 @@ class _MatrixWidget extends StatelessWidget {
         .where((row) => row.any((value) => value != 0))
         .map((row) => row.where((value) => value != 0).toList())
         .toList();
-
-
-
-
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -195,13 +195,8 @@ class _MatrixWidget extends StatelessWidget {
           ],
         ),
       ),
-
     );
-
   }
-
-
-
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -224,7 +219,8 @@ class _TableCell extends StatelessWidget {
   final bool isBold;
   final Color? backgroundColor;
 
-  _TableCell(this.text, {this.isHeader = false, this.isBold = false, this.backgroundColor});
+  _TableCell(this.text,
+      {this.isHeader = false, this.isBold = false, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -235,17 +231,28 @@ class _TableCell extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontWeight: isBold ? FontWeight.bold : isHeader ? FontWeight.bold : FontWeight.normal,
-          color: isBold ? Colors.purple : isHeader ? Colors.black : Colors.grey.shade600,
+          fontWeight: isBold
+              ? FontWeight.bold
+              : isHeader
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+          color: isBold
+              ? Colors.purple
+              : isHeader
+                  ? Colors.black
+                  : Colors.grey.shade600,
           fontSize: isBold ? 16 : 14,
         ),
       ),
     );
   }
 }
-void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<List<int>> matrixFull) {
+
+void _showMinimizeAlertDialog(
+    BuildContext context, List<String> values, List<List<int>> matrixFull) {
   Norwest northwest = Norwest();
-  List<TextEditingController> textControllers = List.generate(values.length, (index) => TextEditingController());
+  List<TextEditingController> textControllers =
+      List.generate(values.length, (index) => TextEditingController());
   List<int> costos = [];
 
   AlertDialog alertDialog = AlertDialog(
@@ -292,6 +299,8 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
           List<int> demanda = []; // Lista para almacenar la demanda
           //print('$textControllers');
 
+          //creando lista auxilizar solo con ceros, demanda y oferta:
+
           for (int col = 0; col < matrixArists[0].length; col++)
             if (matrixArists.any((row) => row[col] != 0)) {
               String endNode = textControllers[col].text;
@@ -310,25 +319,21 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
           print('Oferta: $oferta');
           print('Demanda: $demanda');
 
-          //List<String> ofertaS = oferta.map((value) => value.toString()).toList();
-          //List<String> demandaS = demanda.map((value) => value.toString()).toList();
+          List<List<int>> matrix_aux = List.generate(
+              oferta.length, (row) => List.filled(demanda.length + 1, 0));
 
-          // Filtrar la matriz para eliminar los elementos iguales a 0
-          /*List<List<int>> matrizFiltrada = matrixFull.map((fila) {
-            return fila.where((elemento) => elemento != 0).toList();
-          }).toList();
+          // Llenar la matriz con los valores de oferta y demanda
+          for (int i = 0; i < oferta.length; i++) {
+            for (int j = 0; j < demanda.length; j++) {
+              matrix_aux[i][j] = 0;
+            }
+            matrix_aux[i][demanda.length] = oferta[i];
+          }
 
-       // Imprimir la matriz original y la matriz filtrada
-          print('Matriz Original: $matrixFull');
-          print('Matriz Filtrada: $matrizFiltrada');*/
+          // Agregar la fila final con los valores de demanda y -1
+          matrix_aux.add([...demanda, -1]);
 
-
-          /*List<List<String>> matrixAristsStrings = matrixFull
-              .map((row) => row.map((value) => value.toString()).toList())
-              .toList();*/
-          //print('Matriz Original: $matrixFull');
-
-
+          var solutions = findAllSolutions(matrix_aux);
 
           List<String> rows = [];
           List<String> columns = [];
@@ -354,52 +359,60 @@ void _showMinimizeAlertDialog(BuildContext context, List<String> values,List<Lis
               .toList();
           print('Matriz Original: $reducedMatrix');
 
-          ResultadoNorwest resultado = northwest.calcNorwest(reducedMatrix, oferta, demanda);
-          List<List<int>> matrizResultado = resultado.matriz;
-          int sumatoria = resultado.sumatoria;
-          //print('Matriz: $resultado');
+          //interaciones entre todas las solutions para ver cual es el mas optimo con la matriz realizando la suma
+          int sumaAux = 999999;
+          int pos = -1;
 
-          AlertDialog resultDialog = AlertDialog(
-            title: Text('Resultado de Norwest'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Mostrar la matriz resultante
-                ...matrizResultado.map((row) {
-                  return Row(
-                    children: row.map((cell) {
-                      return Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: Text('$cell\t'),
-                      );
-                    }).toList(),
-                  );
-                }).toList(),
+          for (int i = 0; i < solutions.length; i++) {
+            int suma = 0;
+            for (int j = 0; j < solutions[i].length - 1; j++) {
+              for (int k = 0; k < solutions[i][j].length - 1; k++) {
+                if (solutions[i][j][k] != 0) {
+                  suma = suma + (solutions[i][j][k] * reducedMatrix[j][k]);
+                }
+              }
+            }
+            if (suma < sumaAux) {
+              sumaAux = suma;
+              pos = i;
+            }
+          }
 
-                // Mostrar el costo total
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text('Costo Total: $sumatoria'),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Cerrar'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+          //solucion optima para maximizar:
+          int sumaAux2 = -999999;
+          int pos2 = -1;
+
+          for (int i = 0; i < solutions.length; i++) {
+            int suma = 0;
+            for (int j = 0; j < solutions[i].length - 1; j++) {
+              for (int k = 0; k < solutions[i][j].length - 1; k++) {
+                if (solutions[i][j][k] != 0) {
+                  suma = suma + (solutions[i][j][k] * reducedMatrix[j][k]);
+                }
+              }
+            }
+            if (suma > sumaAux2) {
+              sumaAux2 = suma;
+              pos2 = i;
+            }
+          }
+
+          print("values: $values");
+          print("solutions min: ${solutions[pos]}");
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultadoPantalla(
+                solucionMinimizacion: solutions[pos],
+                solucionMaximizacion: solutions[pos2],
+                sumaMinimizacion: sumaAux.toDouble(),
+                sumaMaximizacion: sumaAux2.toDouble(),
               ),
-            ],
-          );
-;
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return resultDialog;
-            },
+            ),
           );
 
+          //print('Matriz: $resultado');
         },
       ),
       TextButton(

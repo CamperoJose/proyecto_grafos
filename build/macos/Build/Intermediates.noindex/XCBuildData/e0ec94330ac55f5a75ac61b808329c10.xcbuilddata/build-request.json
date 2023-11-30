@@ -9,7 +9,7 @@
       "guid" : "18c1723432283e0cc55f10a6dcfd9e02a26d6e580d3222b86d62fb80ec380c14"
     }
   ],
-  "containerPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/macos/Runner.xcworkspace",
+  "containerPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/macos/Runner.xcworkspace",
   "continueBuildingAfterErrors" : false,
   "enableIndexBuildArena" : false,
   "hideShellScriptEnvironment" : false,
@@ -19,7 +19,7 @@
     "activeRunDestination" : {
       "disableOnlyActiveArch" : false,
       "platform" : "macosx",
-      "sdk" : "macosx13.3",
+      "sdk" : "macosx14.0",
       "sdkVariant" : "macos",
       "supportedArchitectures" : [
         "arm64e",
@@ -29,27 +29,28 @@
       "targetArchitecture" : "arm64"
     },
     "arenaInfo" : {
-      "buildIntermediatesPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Build/Intermediates.noindex",
-      "buildProductsPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Build/Products",
-      "derivedDataPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos",
-      "indexDataStoreFolderPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Index.noindex/DataStore",
+      "buildIntermediatesPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Products",
+      "derivedDataPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos",
+      "indexDataStoreFolderPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Index.noindex/DataStore",
       "indexEnableDataStore" : true,
-      "indexPCHPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Index.noindex/PrecompiledHeaders",
-      "pchPath" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Build/Intermediates.noindex/PrecompiledHeaders"
+      "indexPCHPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Intermediates.noindex/PrecompiledHeaders"
     },
     "configurationName" : "Debug",
     "overrides" : {
       "commandLine" : {
         "table" : {
           "COMPILER_INDEX_STORE_ENABLE" : "NO",
-          "OBJROOT" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Build/Intermediates.noindex",
-          "SYMROOT" : "/Users/jose/DEVELOPMENT/proyectos/dispMoviles/proy6/build/macos/Build/Products"
+          "OBJROOT" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Intermediates.noindex",
+          "SYMROOT" : "/Users/jose/DEVELOPMENT/ALGORITMOS/proyecto_grafos/build/macos/Build/Products"
         }
       },
       "synthesized" : {
         "table" : {
           "ACTION" : "build",
-          "ENABLE_PREVIEWS" : "NO"
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "NO"
         }
       }
     }
